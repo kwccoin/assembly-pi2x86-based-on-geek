@@ -1,0 +1,281 @@
+# --- NOT USED; JUST SOME SOURCE FOR COPYING AND REFERENCE ___----
+
+# 
+# w-7
+# 	need nasm, make, gcc, genisoimage, objcopy
+# 	cd /cygdrive/e/downloads-c/little-book-os/ch4magic
+# 
+
+# bochs and qemu
+
+# cross compiler
+
+# toolchain for arm: Cambridge use : .... https://launchpad.net/gcc-arm-embedded
+
+
+# working scripts:
+
+export PREFIX="$HOME/opt/gcc-arm-none-eabi-5_3-2016q1"
+export TARGET=arm-none-eabi
+export PATH="$PREFIX/bin:$PATH"
+ 
+http://wiki.osdev.org/Raspberry_Pi_Bare_Bones
+
+arm-none-eabi-gcc -mcpu=arm1176jzf-s -fpic -ffreestanding -c boot.S -o boot.o
+arm-none-eabi-gcc -mcpu=arm1176jzf-s -fpic -ffreestanding -std=gnu99 -c kernel.c -o kernel.o -O2 -Wall -Wextra
+
+arm-none-eabi-gcc -T linker.ld -o myos.elf -ffreestanding -O2 -nostdlib boot.o kernel.o
+arm-none-eabi-objcopy myos.elf -O binary myos.bin
+
+# got a warning about not using libgcc like other barebone ... 
+
+whilst this http://www.valvers.com/open-software/raspberry-pi/step01-bare-metal-programming-in-cpt1/ 
+   tell us how to use gdb ... no target sim unlike linux
+
+this helps to say how to download extra features of qemu i.e. +target_arm!!
+https://answers.launchpad.net/gcc-arm-embedded/+question/260515
+https://www.macports.org/ports.php?by=category&substr=emulators
+
+Chis-MacBook-Pro:osdev-barebone-arm chichunng$ sudo port install qemu +target_arm
+--->  Computing dependencies for qemu
+--->  Fetching archive for qemu
+--->  Attempting to fetch qemu-2.6.0_0+cocoa+target_arm+target_i386+target_x86_64+usb.darwin_15.x86_64.tbz2 from http://jog.id.packages.macports.org/macports/packages/qemu
+--->  Attempting to fetch qemu-2.6.0_0+cocoa+target_arm+target_i386+target_x86_64+usb.darwin_15.x86_64.tbz2 from http://nou.nc.packages.macports.org/pub/macports/packages.macports.org/qemu
+--->  Attempting to fetch qemu-2.6.0_0+cocoa+target_arm+target_i386+target_x86_64+usb.darwin_15.x86_64.tbz2 from https://packages.macports.org/qemu
+--->  Fetching distfiles for qemu
+--->  Verifying checksums for qemu
+--->  Extracting qemu
+--->  Applying patches to qemu
+--->  Configuring qemu
+--->  Building qemu
+--->  Staging qemu into destroot
+--->  Installing qemu @2.6.0_0+cocoa+target_arm+target_i386+target_x86_64+usb
+--->  Deactivating qemu @2.6.0_0+cocoa+target_i386+target_x86_64+usb
+--->  Cleaning qemu
+--->  Activating qemu @2.6.0_0+cocoa+target_arm+target_i386+target_x86_64+usb
+--->  Cleaning qemu
+--->  Updating database of binaries
+--->  Scanning binaries for linking errors
+--->  No broken files found.
+Chis-MacBook-Pro:osdev-barebone-arm chichunng$ 
+
+The one barebone page building qemu does not work as the guys source is no longer available 
+	need to use 
+
+sudo port install qemu +target_arm
+
+and 
+
+qemu-system-arm -kernel kernel.elf -cpu arm1176 -m 256 -M raspi -serial stdio -machine raspi2
+
+unlike the compiler this qemu things does not need to use set directory ... 
+
+qemu-system-arm -kernel myos.elf -cpu arm1176 -m 256 -M raspi -serial stdio -machine raspi2
+
+
+# 
+
+# 
+
+SHELL=/bin/bash  # Mac need this
+
+OBJECTS-4 = sum_of_three.o loader-4.o add2.o
+OBJECTS-B = boot-B.o kernel-B.o
+
+
+PREFIX=$(HOME)/opt/cross-g6b26-i686
+TARGET=i686-elf
+export PATH:=$(PREFIX)/bin:$(PATH)   
+# not working PATH="$(PREFIX)/bin:$(PATH)" # need to use := to avoid recursive
+CC = $(TARGET)-gcc
+
+CFLAGS-4 =  -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
+			-nostartfiles -nodefaultlibs -Wall -Wextra -Werror \
+			-c			
+
+
+
+CFLAGS-B =  -std=gnu99 -ffreestanding -O2 -O2 -Wall -Wextra \
+			-c
+
+##
+## file generated have problem. ... 
+
+## originally use -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
+##			      -nostartfiles -nodefaultlibs -Wall -Wextra -Werror \
+##                -c			
+
+# not sure this is the barebone c options ... -std=gnu99 -ffreestanding -O2 -Wall -Wextra
+# not sure what is CLDFLAGS
+
+CLDFLAGS =  -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
+			-nostartfiles -nodefaultlibs -Wall -Wextra -Werror
+			
+LD = $(TARGET)-ld
+LDFLAGS = -T link-4.ld -melf_i386
+
+AS = $(TARGET)-as
+ASFLAGS =
+ 
+NASM = nasm
+NASMFLAGS = -f elf
+
+all: kernel-4.elf kernel-B.elf # 4 for book4 no stdlib, B use stdlib for compiler only
+
+# http://f.osdev.org/viewtopic.php?f=13&t=25537
+# not sure 
+
+kernel-4.elf: $(OBJECTS-4)
+	$(LD) $(LDFLAGS) $(OBJECTS-4) -o kernel-4.elf 
+	
+	#$(TARGET)-gcc -T linker.ld -o kernel-B.elf -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc
+	
+	# ld -T link.ld -mi386pe $(OBJECTS) -o kernel.elf 
+	# objcopy useless here ... seems work under gameboy
+	
+	$(TARGET)-readelf -a kernel-4.elf 
+	
+	# objcopy can pretend but the emulator reject it ... not valid file format
+	
+	# trying this: http://stackoverflow.com/questions/5612492/how-to-link-elf32-assembly-and-c-files
+	# not seems to work but at least help the c naming issues
+	
+	# gcc $(CLDFLAGS) sum_of_three.o loader.o -o kernel.elf # add2.o # first fail ... not obj issue but name issue
+	# no use it generated pe format still 
+	$(TARGET)-objdump -D sum_of_three.o  # modified as mac os x does not come with it and catch this issue
+	$(TARGET)-objdump -D loader-4.o        # ditto
+	
+	#file kernel.obj
+	file kernel-4.elf
+
+
+kernel-B.elf: $(OBJECTS-B)
+	# $(LD) $(LDFLAGS) $(OBJECTS-B) -o kernel-B.elf 
+	
+	$(TARGET)-gcc -T linker-B.ld -o kernel-B.elf -ffreestanding -O2 -nostdlib boot-B.o kernel-B.o -lgcc
+	
+	# ld -T link.ld -mi386pe $(OBJECTS) -o kernel.elf 
+	# objcopy useless here ... seems work under gameboy
+	
+	$(TARGET)-readelf -a kernel-B.elf 
+	
+	# objcopy can pretend but the emulator reject it ... not valid file format
+	
+	# trying this: http://stackoverflow.com/questions/5612492/how-to-link-elf32-assembly-and-c-files
+	# not seems to work but at least help the c naming issues
+	
+	# gcc $(CLDFLAGS) sum_of_three.o loader-B.o -o kernel-B.elf # add2.o # first fail ... not obj issue but name issue
+	# no use it generated pe format still 
+	#$(TARGET)-objdump -D sum_of_three.o  # modified as mac os x does not come with it and catch this issue
+	#$(TARGET)-objdump -D loader-B.o        # ditto
+	
+	#file kernel.obj
+	file kernel-B.elf
+
+os-4.iso: kernel-4.elf
+	cp kernel-4.elf iso/boot/kernel.elf
+	# need to sudo port install cdrtools 
+	# to get mkisofs
+	#genisoimage -R                         \
+	
+	# need a space line
+	# need different input-charset not utf8
+	# iconv -l
+	# found UTF-8
+	     
+	mkisofs -R                              \
+		-b boot/grub/stage2_eltorito    \
+		-no-emul-boot                   \
+		-boot-load-size 4               \
+		-A os                           \
+		-input-charset utf-8             \
+		-quiet                          \
+		-boot-info-table                \
+		-o os-4.iso                       \
+		iso
+	cp os-4.iso bochs-2.6.8.run/ch4magic-assem-os-mac-4.iso 
+
+
+	
+os-B.iso: kernel-B.elf
+	cp kernel-B.elf iso/boot/kernel.elf
+	# need to sudo port install cdrtools 
+	# to get mkisofs
+	#genisoimage -R                         \
+	
+	# need a space line
+	# need different input-charset not utf8
+	# iconv -l
+	# found UTF-8
+	     
+	mkisofs -R                              \
+		-b boot/grub/stage2_eltorito    \
+		-no-emul-boot                   \
+		-boot-load-size 4               \
+		-A os                           \
+		-input-charset utf-8             \
+		-quiet                          \
+		-boot-info-table                \
+		-o os-B.iso                       \
+		iso
+	cp os-B.iso bochs-2.6.8.run/ch4magic-assem-os-mac-B.iso 
+
+
+run-qemu-mac-4: os-4.iso
+
+	# note ctrl-opt-2 get you to qemu-terminal
+	# qemu-img create mydisk.img 10G
+	# qemu-system-x86_64 -boot d -cdrom os.iso -m 512 -hda mydisk.img
+	 
+	qemu-system-i386 -cdrom os-4.iso
+
+run-qemu-mac-B: os-B.iso
+
+	# note ctrl-opt-2 get you to qemu-terminal
+	# qemu-img create mydisk.img 10G
+	# qemu-system-x86_64 -boot d -cdrom os.iso -m 512 -hda mydisk.img
+	 
+	qemu-system-i386 -cdrom os-B.iso
+
+
+
+run-bochs-mac-4: os-4.iso
+
+	# whilst it can run under X
+	# it need X
+	# no gui_debug 
+	
+	bochs -f bochs-2.6.8.run/ch4magic-assem-bochsrc-4.bxrc -q
+	# manual under dos cd bochs-2.6.8.run
+	# manual under dos ch4magic-run.bat
+
+run-bochs-mac-B: os-B.iso
+
+	# whilst it can run under X
+	# it need X
+	# no gui_debug 
+	
+	bochs -f bochs-2.6.8.run/ch4magic-assem-bochsrc-B.bxrc -q
+	# manual under dos cd bochs-2.6.8.run
+	# manual under dos ch4magic-run.bat
+
+%.o: %.c
+	#export PATH
+	#echo $(PATH)
+	$(CC) $(CFLAGS-B) $< -o $@  #cannot be both ???
+
+%.o: %.s
+	#export PATH
+	#echo $(PATH)
+	$(AS) $(ASFLAGS) $< -o $@
+
+%.o: %.asm
+	#export PATH
+	#echo $(PATH)
+	$(NASM) $(NASMFLAGS) $< -o $@
+
+
+clean:
+	#export PATH
+	#echo $(PATH)
+	rm -rf *.o *.obj kernel*.elf os*.iso bochs-2.6.8.run/*.iso

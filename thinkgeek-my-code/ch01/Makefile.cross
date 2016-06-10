@@ -1,0 +1,46 @@
+# Makefile
+
+# export PREFIX="$HOME/opt/gcc-arm-none-eabi-5_3-2016q1"
+# export TARGET=arm-none-eabi
+# export PATH="$PREFIX/bin:$PATH"
+ 
+# $TARGET-objdump -d first.o
+
+# arm-none-eabi-gcc -mcpu=arm1176jzf-s -fpic -ffreestanding -c boot.S -o boot.o
+# arm-none-eabi-gcc -mcpu=arm1176jzf-s -fpic -ffreestanding -std=gnu99 -c kernel.c -o kernel.o -O2 -Wall -Wextra
+# arm-none-eabi-gcc -T linker.ld -o myos.elf -ffreestanding -O2 -nostdlib boot.o kernel.o
+# arm-none-eabi-objcopy myos.elf -O binary myos.bin
+
+
+SHELL=/bin/bash  # Mac need this
+
+PREFIX=$(HOME)/opt/gcc-arm-none-eabi-5_3-2016q1
+TARGET=arm-none-eabi
+PATH:=$(PREFIX)/bin:$(PATH)
+
+
+GCC = $(TARGET)-gcc
+GCC-OPT = --specs=nosys.specs # avoid exit.C to call _exit and fail
+AS = $(TARGET)-as
+OBJDUMP = $(TARGET)-objdump
+OBJDUMP-OPT = -d
+
+all: first
+ 
+first: first.o
+	#export PATH
+	#echo $(PATH)
+	$(GCC) $(GCC-OPT) -o $@ $+
+ 
+first.o : first.s
+	#export PATH
+	#echo $(PATH)
+	$(AS) -o $@ $<
+
+objdump: first.o
+	$(OBJDUMP) $(OBJDUMP-OPT) first.o
+ 
+clean:
+	#export PATH
+	#echo $(PATH)
+	rm -vf first *.o
