@@ -1,20 +1,20 @@
 # Makefile
 
-all: first
+all: sum01
  
-first: first.o
+sum01: sum01.o
 	gcc -o $@ $+
  
-first.o : first.s
+sum01.o : sum01.s
 	as -o $@ $<
 	
-run: first
-	./first; echo $$? # not sure why 132 i.e CR 2 not just 2 
+run: sum01
+	./sum01; echo $$? # not sure why 132 i.e CR 2 not just 2 
 
-objdump: first.o
-	objdump -d first.o
+objdump: sum01.o
+	objdump -d sum01.o
 
-gdb: first
+gdb: sum01
 	# http://web.cecs.pdx.edu/~jrb/cs201/lectures/handouts/gdbcomm.txt
 	# start
 	# disas
@@ -34,7 +34,7 @@ gdb: first
 	# show commands
 	# define caommand ... end
 	# help running/run/info/info line/show/show coammnds
-	gdb --args ./first
+	gdb --args ./sum01
 
 clean:
-	rm -vf first *.o
+	rm -vf sum01 *.o
