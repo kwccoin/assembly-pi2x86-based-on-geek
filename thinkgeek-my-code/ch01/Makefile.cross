@@ -37,6 +37,9 @@ first.o : first.s
 	#echo $(PATH)
 	$(AS) -o $@ $<
 
+run: first
+	./first; echo $$? # not sure why 132 i.e CR 2 not just 2 in the first run due to perhaps no CR in the original file??
+
 objdump: first.o
 	$(OBJDUMP) $(OBJDUMP-OPT) first.o
  

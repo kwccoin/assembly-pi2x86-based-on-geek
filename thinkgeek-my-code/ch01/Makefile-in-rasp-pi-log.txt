@@ -1,0 +1,725 @@
+Makefile-log.txt
+
+Last login: Fri Jun 10 18:12:59 on ttys004
+Chis-MacBook-Pro:~ chichunng$ arp -a -n
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -a -i
+arp: option requires an argument -- i
+usage: arp [-n] [-i interface] hostname
+       arp [-n] [-i interface] [-l] -a
+       arp -d hostname [pub] [ifscope interface]
+       arp -d [-i interface] -a
+       arp -s hostname ether_addr [temp] [reject] [blackhole] [pub [only]] [ifscope interface]
+       arp -S hostname ether_addr [temp] [reject] [blackhole] [pub [only]] [ifscope interface]
+       arp -f filename
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.2.1) at 2a:cf:e9:21:d0:64 on bridge100 ifscope permanent [bridge]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.2.1) at 2a:cf:e9:21:d0:64 on bridge100 ifscope permanent [bridge]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en11 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en11 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ 
+  [Restored 10 Jun 2016, 6:33:56 PM]
+Last login: Fri Jun 10 18:33:53 on ttys001
+Restored session: Fri Jun 10 18:30:45 HKT 2016
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (169.254.148.153) at 38:c9:86:40:a6:3 on en4 permanent [ethernet]
+? (169.254.255.255) at (incomplete) on en0 [ethernet]
+? (172.16.94.255) at (incomplete) on vmnet8 ifscope [ethernet]
+? (172.16.178.255) at (incomplete) on vmnet1 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.77) at 8:0:37:db:85:13 on en0 ifscope [ethernet]
+? (192.168.1.255) at (incomplete) on en0 ifscope [ethernet]
+? (192.168.2.4) at b8:27:eb:a0:c3:d4 on bridge100 ifscope [bridge]
+? (192.168.2.255) at (incomplete) on bridge100 ifscope [bridge]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ ssh pi@192.168.2.4
+pi@192.168.2.4's password: 
+Permission denied, please try again.
+pi@192.168.2.4's password: 
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Fri Jun 10 11:08:01 2016 from 192.168.2.1
+pi@raspberrypi:~ $ ls
+Desktop         Videos
+Documents       a.out
+Downloads       crossdev-mac-arm copy.txt
+Makefile        first
+Makefile.cross  first.o
+Music           first.s
+Pictures        python_games
+Public          sbcl-1.2.14-armhf-linux-binary.tar.bz2
+Templates       sbcl-1.3.6-source.tar.bz2?download
+pi@raspberrypi:~ $ make
+as -o first.o first.s
+first.s: Assembler messages:
+first.s:6: Warning: partial line at end of file ignored
+gcc -o first first.o
+pi@raspberrypi:~ $ ./first
+pi@raspberrypi:~ $ mkdir ch01
+pi@raspberrypi:~ $ cd ch01
+pi@raspberrypi:~/ch01 $ ls
+Makefile  Makefile.cross  crossdev-mac-arm copy.txt  first  first.o  first.s
+pi@raspberrypi:~/ch01 $ make -clean
+make: invalid option -- 'c'
+Usage: make [options] [target] ...
+Options:
+  -b, -m                      Ignored for compatibility.
+  -B, --always-make           Unconditionally make all targets.
+  -C DIRECTORY, --directory=DIRECTORY
+                              Change to DIRECTORY before doing anything.
+  -d                          Print lots of debugging information.
+  --debug[=FLAGS]             Print various types of debugging information.
+  -e, --environment-overrides
+                              Environment variables override makefiles.
+  --eval=STRING               Evaluate STRING as a makefile statement.
+  -f FILE, --file=FILE, --makefile=FILE
+                              Read FILE as a makefile.
+  -h, --help                  Print this message and exit.
+  -i, --ignore-errors         Ignore errors from recipes.
+  -I DIRECTORY, --include-dir=DIRECTORY
+                              Search DIRECTORY for included makefiles.
+  -j [N], --jobs[=N]          Allow N jobs at once; infinite jobs with no arg.
+  -k, --keep-going            Keep going when some targets can't be made.
+  -l [N], --load-average[=N], --max-load[=N]
+                              Don't start multiple jobs unless load is below N.
+  -L, --check-symlink-times   Use the latest mtime between symlinks and target.
+  -n, --just-print, --dry-run, --recon
+                              Don't actually run any recipe; just print them.
+  -o FILE, --old-file=FILE, --assume-old=FILE
+                              Consider FILE to be very old and don't remake it.
+  -O[TYPE], --output-sync[=TYPE]
+                              Synchronize output of parallel jobs by TYPE.
+  -p, --print-data-base       Print make's internal database.
+  -q, --question              Run no recipe; exit status says if up to date.
+  -r, --no-builtin-rules      Disable the built-in implicit rules.
+  -R, --no-builtin-variables  Disable the built-in variable settings.
+  -s, --silent, --quiet       Don't echo recipes.
+  -S, --no-keep-going, --stop
+                              Turns off -k.
+  -t, --touch                 Touch targets instead of remaking them.
+  --trace                     Print tracing information.
+  -v, --version               Print the version number of make and exit.
+  -w, --print-directory       Print the current directory.
+  --no-print-directory        Turn off -w, even if it was turned on implicitly.
+  -W FILE, --what-if=FILE, --new-file=FILE, --assume-new=FILE
+                              Consider FILE to be infinitely new.
+  --warn-undefined-variables  Warn when an undefined variable is referenced.
+
+This program built for arm-unknown-linux-gnueabihf
+Report bugs to <bug-make@gnu.org>
+pi@raspberrypi:~/ch01 $ make clean
+rm -vf first *.o
+removed 'first'
+removed 'first.o'
+pi@raspberrypi:~/ch01 $ make
+as -o first.o first.s
+first.s: Assembler messages:
+first.s:6: Warning: partial line at end of file ignored
+gcc -o first first.o
+pi@raspberrypi:~/ch01 $ ./first
+pi@raspberrypi:~/ch01 $ make run
+make: *** No rule to make target 'run'.  Stop.
+pi@raspberrypi:~/ch01 $ make clean
+rm -vf first *.o
+removed 'first'
+removed 'first.o'
+pi@raspberrypi:~/ch01 $ make
+as -o first.o first.s
+first.s: Assembler messages:
+first.s:6: Warning: partial line at end of file ignored
+gcc -o first first.o
+pi@raspberrypi:~/ch01 $ make run
+./first; echo first
+first
+pi@raspberrypi:~/ch01 $ vi Makefile
+pi@raspberrypi:~/ch01 $ make clean
+rm -vf first *.o
+removed 'first'
+removed 'first.o'
+pi@raspberrypi:~/ch01 $ make
+as -o first.o first.s
+first.s: Assembler messages:
+first.s:6: Warning: partial line at end of file ignored
+gcc -o first first.o
+pi@raspberrypi:~/ch01 $ make run
+./first; echo $?
+132
+pi@raspberrypi:~/ch01 $ ./first
+pi@raspberrypi:~/ch01 $ echo $?
+132
+pi@raspberrypi:~/ch01 $ objdump -d first.o
+
+first.o:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <main>:
+   0:	e3a00002 	mov	r0, #2
+pi@raspberrypi:~/ch01 $ make clean
+rm -vf first *.o
+removed 'first'
+removed 'first.o'
+pi@raspberrypi:~/ch01 $ make
+as -o first.o first.s
+gcc -o first first.o
+pi@raspberrypi:~/ch01 $ make run
+./first; echo $? # not sure why 132 i.e CR 2 not just 2 
+2
+pi@raspberrypi:~/ch01 $ 
+
+==================================
+
+Last login: Fri Jun 10 16:19:22 on ttys000
+Chis-MacBook-Pro:~ chichunng$ sudo kill -INFO $(pgrep ^dd)
+Chis-MacBook-Pro:~ chichunng$ sudo kill -INFO $(pgrep ^dd)
+Chis-MacBook-Pro:~ chichunng$ sudo kill -INFO $(pgrep ^dd)
+Password:
+Chis-MacBook-Pro:~ chichunng$ cd /Users/chichunng/Documents/world-git/assembly-pi2x86-based-on-geek/thinkgeek-my-code/ch01 
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross 
+arm-none-eabi-as -o first.o first.s
+make: arm-none-eabi-as: No such file or directory
+make: *** [first.o] Error 1
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross 
+arm-none-eabi-as -o first.o first.s
+/bin/bash: arm-none-eabi-as: command not found
+make: *** [first.o] Error 127
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross 
+export PATH
+echo "REFIX/bin:ATH"
+REFIX/bin:ATH
+arm-none-eabi-as -o first.o first.s
+/bin/bash: arm-none-eabi-as: command not found
+make: *** [first.o] Error 127
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross 
+export PATH
+echo "REFIX/bin:ATH"
+REFIX/bin:ATH
+arm-none-eabi-as -o first.o first.s
+/bin/bash: arm-none-eabi-as: command not found
+make: *** [first.o] Error 127
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross 
+Makefile.cross:7: *** Recursive variable `PATH' references itself (eventually).  Stop.
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross 
+#export PATH
+#echo ""/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1"/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin"
+arm-none-eabi-as -o first.o first.s
+/bin/bash: arm-none-eabi-as: command not found
+make: *** [first.o] Error 127
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross 
+export PATH
+echo ""/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1"/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin"
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
+arm-none-eabi-as -o first.o first.s
+/bin/bash: arm-none-eabi-as: command not found
+make: *** [first.o] Error 127
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross 
+export PATH
+echo /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
+arm-none-eabi-as -o first.o first.s
+first.s: Assembler messages:
+first.s:6: Warning: end of file not at end of a line; newline inserted
+#export PATH
+#echo /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
+arm-none-eabi-gcc -o first first.o
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): In function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+make: *** [first] Error 1
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross 
+#export PATH
+#echo /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
+arm-none-eabi-gcc -o first first.o
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): In function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+make: *** [first] Error 1
+Chis-MacBook-Pro:ch01 chichunng$ ls
+Makefile			first.o
+Makefile.cross			first.s
+crossdev-mac-arm copy.txt
+Chis-MacBook-Pro:ch01 chichunng$ dumpobj -d first.o
+-bash: dumpobj: command not found
+Chis-MacBook-Pro:ch01 chichunng$ objdump -d first.o
+-bash: objdump: command not found
+Chis-MacBook-Pro:ch01 chichunng$ /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/objdump -d first.o
+-bash: /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/objdump: No such file or directory
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/
+arm-none-eabi-addr2line		arm-none-eabi-gcov-tool
+arm-none-eabi-ar		arm-none-eabi-gdb
+arm-none-eabi-as		arm-none-eabi-gdb-py
+arm-none-eabi-c++		arm-none-eabi-gprof
+arm-none-eabi-c++filt		arm-none-eabi-ld
+arm-none-eabi-cpp		arm-none-eabi-ld.bfd
+arm-none-eabi-elfedit		arm-none-eabi-nm
+arm-none-eabi-g++		arm-none-eabi-objcopy
+arm-none-eabi-gcc		arm-none-eabi-objdump
+arm-none-eabi-gcc-5.3.1		arm-none-eabi-ranlib
+arm-none-eabi-gcc-ar		arm-none-eabi-readelf
+arm-none-eabi-gcc-nm		arm-none-eabi-size
+arm-none-eabi-gcc-ranlib	arm-none-eabi-strings
+arm-none-eabi-gcov		arm-none-eabi-strip
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump start.o
+ls: start.o: No such file or directory
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump
+Chis-MacBook-Pro:ch01 chichunng$ ls
+Makefile			first.o
+Makefile.cross			first.s
+crossdev-mac-arm copy.txt
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump first.o
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump
+first.o
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump -d first.o
+ls: -d: No such file or directory
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump
+first.o
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump --help
+ls: --help: No such file or directory
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump -h
+ls: -h: No such file or directory
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump -D first.o
+ls: -D: No such file or directory
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump
+first.o
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-file first.o
+ls: /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-file: No such file or directory
+first.o
+Chis-MacBook-Pro:ch01 chichunng$ file first.o
+first.o: ELF 32-bit LSB relocatable, ARM, version 1 (SYSV), not stripped
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump -version
+ls: -version: No such file or directory
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump
+Chis-MacBook-Pro:ch01 chichunng$ objdump
+-bash: objdump: command not found
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump --version
+ls: --version: No such file or directory
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump -h
+ls: -h: No such file or directory
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/
+arm-none-eabi-addr2line		arm-none-eabi-gcov-tool
+arm-none-eabi-ar		arm-none-eabi-gdb
+arm-none-eabi-as		arm-none-eabi-gdb-py
+arm-none-eabi-c++		arm-none-eabi-gprof
+arm-none-eabi-c++filt		arm-none-eabi-ld
+arm-none-eabi-cpp		arm-none-eabi-ld.bfd
+arm-none-eabi-elfedit		arm-none-eabi-nm
+arm-none-eabi-g++		arm-none-eabi-objcopy
+arm-none-eabi-gcc		arm-none-eabi-objdump
+arm-none-eabi-gcc-5.3.1		arm-none-eabi-ranlib
+arm-none-eabi-gcc-ar		arm-none-eabi-readelf
+arm-none-eabi-gcc-nm		arm-none-eabi-size
+arm-none-eabi-gcc-ranlib	arm-none-eabi-strings
+arm-none-eabi-gcov		arm-none-eabi-strip
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-file -S first.o
+ls: -S: No such file or directory
+ls: /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-file: No such file or directory
+first.o
+Chis-MacBook-Pro:ch01 chichunng$ ls /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump -S first.o
+ls: -S: No such file or directory
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/arm-none-eabi-objdump
+first.o
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross objdump
+arm-none-eabi-objdump first.o
+Usage: arm-none-eabi-objdump <option(s)> <file(s)>
+ Display information from object <file(s)>.
+ At least one of the following switches must be given:
+  -a, --archive-headers    Display archive header information
+  -f, --file-headers       Display the contents of the overall file header
+  -p, --private-headers    Display object format specific file header contents
+  -P, --private=OPT,OPT... Display object format specific contents
+  -h, --[section-]headers  Display the contents of the section headers
+  -x, --all-headers        Display the contents of all headers
+  -d, --disassemble        Display assembler contents of executable sections
+  -D, --disassemble-all    Display assembler contents of all sections
+  -S, --source             Intermix source code with disassembly
+  -s, --full-contents      Display the full contents of all sections requested
+  -g, --debugging          Display debug information in object file
+  -e, --debugging-tags     Display debug information using ctags style
+  -G, --stabs              Display (in raw form) any STABS info in the file
+  -W[lLiaprmfFsoRt] or
+  --dwarf[=rawline,=decodedline,=info,=abbrev,=pubnames,=aranges,=macro,=frames,
+          =frames-interp,=str,=loc,=Ranges,=pubtypes,
+          =gdb_index,=trace_info,=trace_abbrev,=trace_aranges,
+          =addr,=cu_index]
+                           Display DWARF info in the file
+  -t, --syms               Display the contents of the symbol table(s)
+  -T, --dynamic-syms       Display the contents of the dynamic symbol table
+  -r, --reloc              Display the relocation entries in the file
+  -R, --dynamic-reloc      Display the dynamic relocation entries in the file
+  @<file>                  Read options from <file>
+  -v, --version            Display this program's version number
+  -i, --info               List object formats and architectures supported
+  -H, --help               Display this information
+make: *** [objdump] Error 2
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross objdump
+arm-none-eabi-objdump -d first.o
+
+first.o:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <main>:
+   0:	e3a00002 	mov	r0, #2
+   4:	e12fff1e 	bx	lr
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross clean
+#export PATH
+#echo /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
+rm -vf first *.o
+first.o
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross
+#export PATH
+#echo /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
+arm-none-eabi-as -o first.o first.s
+first.s: Assembler messages:
+first.s:6: Warning: end of file not at end of a line; newline inserted
+#export PATH
+#echo /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
+arm-none-eabi-gcc -o first first.o
+/Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/libc.a(lib_a-exit.o): In function `exit':
+exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+collect2: error: ld returned 1 exit status
+make: *** [first] Error 1
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross
+#export PATH
+#echo /Users/chichunng/opt/gcc-arm-none-eabi-5_3-2016q1/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
+arm-none-eabi-gcc --specs=nosys.specs  -o first first.o
+Chis-MacBook-Pro:ch01 chichunng$ make -f Makefile.cross objdump
+arm-none-eabi-objdump -d first.o
+
+first.o:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <main>:
+   0:	e3a00002 	mov	r0, #2
+   4:	e12fff1e 	bx	lr
+Chis-MacBook-Pro:ch01 chichunng$ 
+  [Restored 10 Jun 2016, 6:33:53 PM]
+Last login: Fri Jun 10 18:33:52 on ttys000
+Restored session: Fri Jun 10 18:30:45 HKT 2016
+Chis-MacBook-Pro:ch01 chichunng$ ls
+Makefile			first
+Makefile.cross			first.o
+crossdev-mac-arm copy.txt	first.s
+Chis-MacBook-Pro:ch01 chichunng$ scp * pi@192.168.2.4
+pi@192.168.2.4: No such file or directory
+Chis-MacBook-Pro:ch01 chichunng$ arp -n -a
+? (169.254.148.153) at 38:c9:86:40:a6:3 on en4 permanent [ethernet]
+? (169.254.255.255) at (incomplete) on en0 [ethernet]
+? (172.16.94.255) at ff:ff:ff:ff:ff:ff on vmnet8 ifscope [ethernet]
+? (172.16.178.255) at ff:ff:ff:ff:ff:ff on vmnet1 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.77) at 8:0:37:db:85:13 on en0 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en0 ifscope [ethernet]
+? (192.168.2.4) at b8:27:eb:a0:c3:d4 on bridge100 ifscope [bridge]
+? (192.168.2.255) at ff:ff:ff:ff:ff:ff on bridge100 ifscope [bridge]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:ch01 chichunng$ scp * pi@192.168.2.4:
+pi@192.168.2.4's password: 
+Makefile                                      100%  113     0.1KB/s   00:00    
+Makefile.cross                                100% 1045     1.0KB/s   00:00    
+crossdev-mac-arm copy.txt                     100% 8790     8.6KB/s   00:00    
+first                                         100%   39KB  39.0KB/s   00:00    
+first.o                                       100%  640     0.6KB/s   00:00    
+first.s                                       100%  230     0.2KB/s   00:00    
+Chis-MacBook-Pro:ch01 chichunng$ scp * pi@192.168.2.4:ch01
+pi@192.168.2.4's password: 
+Makefile                                      100%  113     0.1KB/s   00:00    
+Makefile.cross                                100% 1045     1.0KB/s   00:00    
+crossdev-mac-arm copy.txt                     100% 8790     8.6KB/s   00:00    
+first                                         100%   39KB  39.0KB/s   00:00    
+first.o                                       100%  640     0.6KB/s   00:00    
+first.s                                       100%  230     0.2KB/s   00:00    
+Chis-MacBook-Pro:ch01 chichunng$ scp * pi@192.168.2.4:ch01
+pi@192.168.2.4's password: 
+Makefile                                      100%  144     0.1KB/s   00:00    
+Makefile.cross                                100% 1045     1.0KB/s   00:00    
+crossdev-mac-arm copy.txt                     100% 8790     8.6KB/s   00:00    
+first                                         100%   39KB  39.0KB/s   00:00    
+first.o                                       100%  640     0.6KB/s   00:00    
+first.s                                       100%  230     0.2KB/s   00:00    
+Chis-MacBook-Pro:ch01 chichunng$ scp * pi@192.168.2.4:ch01
+pi@192.168.2.4's password: 
+Makefile                                      100%  222     0.2KB/s   00:00    
+Makefile.cross                                100% 1117     1.1KB/s   00:00    
+crossdev-mac-arm copy.txt                     100% 8790     8.6KB/s   00:00    
+first                                         100%   39KB  39.0KB/s   00:00    
+first.o                                       100%  640     0.6KB/s   00:00    
+first.s                                       100%  259     0.3KB/s   00:00    
+Chis-MacBook-Pro:ch01 chichunng$ 
+
+=======================
+
+Last login: Fri Jun 10 18:18:25 on ttys003
+Chis-MacBook-Pro:~ chichunng$ screen /dev/cu.Bluetooth-Incoming-Port 115200
+[screen is terminating]
+Chis-MacBook-Pro:~ chichunng$ ls /dev/cu*
+/dev/cu.Bluetooth-Incoming-Port
+Chis-MacBook-Pro:~ chichunng$ ls /dev/cu*
+/dev/cu.Bluetooth-Incoming-Port
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.2.1) at 2a:cf:e9:21:d0:64 on bridge100 ifscope permanent [bridge]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (169.254.91.220) at 38:c9:86:40:a6:3 on en4 permanent [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.2.1) at 2a:cf:e9:21:d0:64 on bridge100 ifscope permanent [bridge]
+? (192.168.2.5) at b8:27:eb:f5:d6:f6 on bridge100 ifscope [bridge]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ ssh pi@192.168.2.5
+Connection closed by 192.168.2.5
+Chis-MacBook-Pro:~ chichunng$ ssh pi@192.168.2.5
+Connection reset by 192.168.2.5
+Chis-MacBook-Pro:~ chichunng$ 
+Chis-MacBook-Pro:~ chichunng$ 
+
+  [Restored 10 Jun 2016, 6:33:56 PM]
+Last login: Fri Jun 10 18:33:53 on ttys002
+Restored session: Fri Jun 10 18:30:45 HKT 2016
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (169.254.63.217) at 38:c9:86:40:a6:3 on en4 permanent [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (169.254.63.217) at 38:c9:86:40:a6:3 on en4 permanent [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (169.254.63.217) at 38:c9:86:40:a6:3 on en4 permanent [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (169.254.63.217) at 38:c9:86:40:a6:3 on en4 permanent [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (169.254.63.217) at 38:c9:86:40:a6:3 on en4 permanent [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.2.1) at 2a:cf:e9:21:d0:64 on bridge100 ifscope permanent [bridge]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.17) at 38:c9:86:d9:76:fb on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.17) at 38:c9:86:d9:76:fb on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.17) at 38:c9:86:d9:76:fb on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.17) at 38:c9:86:d9:76:fb on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.17) at 38:c9:86:d9:76:fb on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.17) at 38:c9:86:d9:76:fb on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.17) at 38:c9:86:d9:76:fb on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.17) at 38:c9:86:d9:76:fb on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.17) at 38:c9:86:d9:76:fb on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.17) at 38:c9:86:d9:76:fb on en8 ifscope [ethernet]
+? (192.168.1.255) at ff:ff:ff:ff:ff:ff on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ ssh pi@192.168.1.17
+ssh: connect to host 192.168.1.17 port 22: Connection refused
+Chis-MacBook-Pro:~ chichunng$ ssh pi@192.168.1.17
+ssh: connect to host 192.168.1.17 port 22: Connection refused
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (169.254.148.153) at 38:c9:86:40:a6:3 on en4 permanent [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.1.17) at 38:c9:86:d9:76:fb on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.2.1) at 2a:cf:e9:21:d0:64 on bridge100 ifscope permanent [bridge]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ ssh pi@192.168.2.1
+ssh: connect to host 192.168.2.1 port 22: Connection refused
+Chis-MacBook-Pro:~ chichunng$ ssh pi@192.168.2.1
+ssh: connect to host 192.168.2.1 port 22: Connection refused
+Chis-MacBook-Pro:~ chichunng$ arp -n -
+arp: -: Unknown host
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en8 ifscope [ethernet]
+? (192.168.2.1) at 2a:cf:e9:21:d0:64 on bridge100 ifscope permanent [bridge]
+? (192.168.2.4) at b8:27:eb:a0:c3:d4 on bridge100 ifscope [bridge]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en8 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ ssh pi@192.168.2.4
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the ECDSA key sent by the remote host is
+SHA256:0wZWF+x+31aAoGHFAQERDOlyqZ6PyIr6XYeRrd8Ukns.
+Please contact your system administrator.
+Add correct host key in /Users/chichunng/.ssh/known_hosts to get rid of this message.
+Offending ECDSA key in /Users/chichunng/.ssh/known_hosts:6
+ECDSA host key for 192.168.2.4 has changed and you have requested strict checking.
+Host key verification failed.
+Chis-MacBook-Pro:~ chichunng$ ssh pi@192.168.2.4
+The authenticity of host '192.168.2.4 (192.168.2.4)' can't be established.
+ECDSA key fingerprint is SHA256:0wZWF+x+31aAoGHFAQERDOlyqZ6PyIr6XYeRrd8Ukns.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '192.168.2.4' (ECDSA) to the list of known hosts.
+pi@192.168.2.4's password: 
+Permission denied, please try again.
+pi@192.168.2.4's password: 
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Tue Jun  7 23:40:03 2016
+pi@raspberrypi:~ $ shutdown now
+==== AUTHENTICATING FOR org.freedesktop.login1.power-off ===
+Authentication is required for powering off the system.
+Multiple identities can be used for authentication:
+ 1.  ,,, (pi)
+ 2.  root
+Choose identity to authenticate as (1-2): 2
+Password: 
+==== AUTHENTICATION COMPLETE ===
+pi@raspberrypi:~ $ Connection to 192.168.2.4 closed by remote host.
+Connection to 192.168.2.4 closed.
+Chis-MacBook-Pro:~ chichunng$ arp -n -a
+? (169.254.148.153) at 38:c9:86:40:a6:3 on en4 permanent [ethernet]
+? (192.168.1.1) at 84:1b:5e:37:f9:27 on en0 ifscope [ethernet]
+? (192.168.2.4) at b8:27:eb:a0:c3:d4 on bridge100 ifscope [bridge]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+Chis-MacBook-Pro:~ chichunng$ ssh pi@192.168.2.4
+pi@192.168.2.4's password: 
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Fri Jun 10 10:56:44 2016
+pi@raspberrypi:~ $ 
