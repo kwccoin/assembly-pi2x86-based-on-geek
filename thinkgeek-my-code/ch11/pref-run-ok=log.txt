@@ -1,0 +1,65 @@
+
+
+
+===============================
+
+d@raspberrypi:~/ch11 $ yes 123 | perf stat --log-fd=3 --repeat=5 -e cpu-clock ./collatz1 3>&1
+Type a number: Length of the Hailstone sequence for 123 is 46
+Type a number: Length of the Hailstone sequence for 123 is 46
+Type a number: Length of the Hailstone sequence for 123 is 46
+Type a number: Length of the Hailstone sequence for 123 is 46
+Type a number: Length of the Hailstone sequence for 123 is 46
+
+ Performance counter stats for './collatz1' (5 runs):
+
+          3.633500      cpu-clock (msec)                                              ( +-  1.51% )
+
+       0.006702606 seconds time elapsed                                          ( +-  3.87% )
+
+d@raspberrypi:~/ch11 $ uname -a
+Linux raspberrypi 4.4.11-v7+ #888 SMP Mon May 23 20:10:33 BST 2016 armv7l GNU/Linux
+d@raspberrypi:~/ch11 $ cat /proc/cpuinfo
+processor	: 0
+model name	: ARMv7 Processor rev 5 (v7l)
+BogoMIPS	: 38.40
+Features	: half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm 
+CPU implementer	: 0x41
+CPU architecture: 7
+CPU variant	: 0x0
+CPU part	: 0xc07
+CPU revision	: 5
+
+processor	: 1
+model name	: ARMv7 Processor rev 5 (v7l)
+BogoMIPS	: 38.40
+Features	: half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm 
+CPU implementer	: 0x41
+CPU architecture: 7
+CPU variant	: 0x0
+CPU part	: 0xc07
+CPU revision	: 5
+
+processor	: 2
+model name	: ARMv7 Processor rev 5 (v7l)
+BogoMIPS	: 38.40
+Features	: half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm 
+CPU implementer	: 0x41
+CPU architecture: 7
+CPU variant	: 0x0
+CPU part	: 0xc07
+CPU revision	: 5
+
+processor	: 3
+model name	: ARMv7 Processor rev 5 (v7l)
+BogoMIPS	: 38.40
+Features	: half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm 
+CPU implementer	: 0x41
+CPU architecture: 7
+CPU variant	: 0x0
+CPU part	: 0xc07
+CPU revision	: 5
+
+Hardware	: BCM2709
+Revision	: a21041
+Serial		: 000000000644243a
+d@raspberrypi:~/ch11 $ 

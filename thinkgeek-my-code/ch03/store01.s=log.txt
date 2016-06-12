@@ -1,0 +1,1828 @@
+cd /Users/chichunng/Documents/world-git/assembly-pi2x86-based-on-geek/thinkgeek-my-code/ch03
+
+sudo visudo
+When you type this command, you will be taken into a text editor session with the file that defines sudo privileges pre-loaded. We will have to add our user to this file to grant our desired access rights.
+
+Find the part of the file that is labeled "User privilege specification". It should look something like this:
+
+# User privilege specification
+root    ALL=(ALL:ALL) ALL
+
+d ...
+
+======
+
+/* -- store01.s */
+ 
+/* -- Data section */
+.data
+ 
+/* Ensure variable is 4-byte aligned */
+.balign 4
+/* Define storage for myvar1 */
+myvar1:
+    /* Contents of myvar1 is just '3' */
+    .word 0
+ 
+/* Ensure variable is 4-byte aligned */
+.balign 4
+/* Define storage for myvar2 */
+myvar2:
+    /* Contents of myvar2 is just '3' */
+    .word 0
+ 
+/* -- Code section */
+.text
+ 
+/* Ensure function section starts 4 byte aligned */
+.balign 4
+.global main
+main:
+    ldr r1, addr_of_myvar1 /* r1 ← &myvar1 */
+    mov r3, #3             /* r3 ← 3 */
+    str r3, [r1]           /* *r1 ← r3 */
+    ldr r2, addr_of_myvar2 /* r2 ← &myvar2 */
+    mov r3, #4             /* r3 ← 4 */
+    str r3, [r2]           /* *r2 ← r3 */
+ 
+    /* Same instructions as above */
+    ldr r1, addr_of_myvar1 /* r1 ← &myvar1 */
+    ldr r1, [r1]           /* r1 ← *r1 */
+    ldr r2, addr_of_myvar2 /* r2 ← &myvar2 */
+    ldr r2, [r2]           /* r1 ← *r2 */
+    add r0, r1, r2
+    bx lr
+ 
+/* Labels needed to access data */
+addr_of_myvar1 : .word myvar1
+addr_of_myvar2 : .word myvar2
+
+/* 
+pi@raspberrypi:~/ch03 $ make gdb2
+gdb --args ./store01
+GNU gdb (Raspbian 7.7.1+dfsg-5) 7.7.1
+Copyright (C) 2014 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "arm-linux-gnueabihf".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from ./store01...(no debugging symbols found)...done.
+(gdb) start
+Temporary breakpoint 1 at 0x103e8
+Starting program: /home/pi/ch03/store01 
+
+Temporary breakpoint 1, 0x000103e8 in main ()
+(gdb) print .data
+A syntax error in expression, near `.data'.
+(gdb) disass /r 
+Dump of assembler code for function main:
+=> 0x000103e8 <+0>:	28 10 9f e5	ldr	r1, [pc, #40]	; 0x10418 <addr_of_myvar1>
+   0x000103ec <+4>:	03 30 a0 e3	mov	r3, #3
+   0x000103f0 <+8>:	00 30 81 e5	str	r3, [r1]
+   0x000103f4 <+12>:	20 20 9f e5	ldr	r2, [pc, #32]	; 0x1041c <addr_of_myvar2>
+   0x000103f8 <+16>:	04 30 a0 e3	mov	r3, #4
+   0x000103fc <+20>:	00 30 82 e5	str	r3, [r2]
+   0x00010400 <+24>:	10 10 9f e5	ldr	r1, [pc, #16]	; 0x10418 <addr_of_myvar1>
+   0x00010404 <+28>:	00 10 91 e5	ldr	r1, [r1]
+   0x00010408 <+32>:	0c 20 9f e5	ldr	r2, [pc, #12]	; 0x1041c <addr_of_myvar2>
+   0x0001040c <+36>:	00 20 92 e5	ldr	r2, [r2]
+   0x00010410 <+40>:	02 00 81 e0	add	r0, r1, r2
+   0x00010414 <+44>:	1e ff 2f e1	bx	lr
+End of assembler dump.
+(gdb) disass /r +2-
+A syntax error in expression, near `'.
+(gdb) disass /r +20
+No function contains specified address.
+(gdb) disass /r 0x000103e8,+20
+Dump of assembler code from 0x103e8 to 0x103fc:
+=> 0x000103e8 <main+0>:	28 10 9f e5	ldr	r1, [pc, #40]	; 0x10418 <addr_of_myvar1>
+   0x000103ec <main+4>:	03 30 a0 e3	mov	r3, #3
+   0x000103f0 <main+8>:	00 30 81 e5	str	r3, [r1]
+   0x000103f4 <main+12>:	20 20 9f e5	ldr	r2, [pc, #32]	; 0x1041c <addr_of_myvar2>
+   0x000103f8 <main+16>:	04 30 a0 e3	mov	r3, #4
+End of assembler dump.
+(gdb) disass /r 0x000103e8,+80
+Dump of assembler code from 0x103e8 to 0x10438:
+=> 0x000103e8 <main+0>:	28 10 9f e5	ldr	r1, [pc, #40]	; 0x10418 <addr_of_myvar1>
+   0x000103ec <main+4>:	03 30 a0 e3	mov	r3, #3
+   0x000103f0 <main+8>:	00 30 81 e5	str	r3, [r1]
+   0x000103f4 <main+12>:	20 20 9f e5	ldr	r2, [pc, #32]	; 0x1041c <addr_of_myvar2>
+   0x000103f8 <main+16>:	04 30 a0 e3	mov	r3, #4
+   0x000103fc <main+20>:	00 30 82 e5	str	r3, [r2]
+   0x00010400 <main+24>:	10 10 9f e5	ldr	r1, [pc, #16]	; 0x10418 <addr_of_myvar1>
+   0x00010404 <main+28>:	00 10 91 e5	ldr	r1, [r1]
+   0x00010408 <main+32>:	0c 20 9f e5	ldr	r2, [pc, #12]	; 0x1041c <addr_of_myvar2>
+   0x0001040c <main+36>:	00 20 92 e5	ldr	r2, [r2]
+   0x00010410 <main+40>:	02 00 81 e0	add	r0, r1, r2
+   0x00010414 <main+44>:	1e ff 2f e1	bx	lr
+   0x00010418 <addr_of_myvar1+0>:	b8 05 02 00			; <UNDEFINED> instruction: 0x000205b8
+   0x0001041c <addr_of_myvar2+0>:	bc 05 02 00			; <UNDEFINED> instruction: 0x000205bc
+   0x00010420 <__libc_csu_init+0>:	f8 43 2d e9	push	{r3, r4, r5, r6, r7, r8, r9, lr}
+   0x00010424 <__libc_csu_init+4>:	00 70 a0 e1	mov	r7, r0
+   0x00010428 <__libc_csu_init+8>:	4c 60 9f e5	ldr	r6, [pc, #76]	; 0x1047c <__libc_csu_init+92>
+   0x0001042c <__libc_csu_init+12>:	4c 50 9f e5	ldr	r5, [pc, #76]	; 0x10480 <__libc_csu_init+96>
+   0x00010430 <__libc_csu_init+16>:	06 60 8f e0	add	r6, pc, r6
+   0x00010434 <__libc_csu_init+20>:	05 50 8f e0	add	r5, pc, r5
+End of assembler dump.
+(gdb) disass /r 0x000205b8,+20
+Dump of assembler code from 0x205b8 to 0x205cc:
+   0x000205b8:	00 00 00 00	andeq	r0, r0, r0
+   0x000205bc:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c0 <completed.9004+0>:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c4:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c8:	00 00 00 00	andeq	r0, r0, r0
+End of assembler dump.
+(gdb) si
+0x000103ec in main ()
+(gdb) disass /r 0x000205b8,+40
+Dump of assembler code from 0x205b8 to 0x205e0:
+   0x000205b8:	00 00 00 00	andeq	r0, r0, r0
+   0x000205bc:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c0 <completed.9004+0>:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c4:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c8:	00 00 00 00	andeq	r0, r0, r0
+   0x000205cc:	00 00 00 00	andeq	r0, r0, r0
+   0x000205d0:	00 00 00 00	andeq	r0, r0, r0
+   0x000205d4:	00 00 00 00	andeq	r0, r0, r0
+   0x000205d8:	00 00 00 00	andeq	r0, r0, r0
+   0x000205dc:	00 00 00 00	andeq	r0, r0, r0
+End of assembler dump.
+(gdb) disass /r 0x000103e8,+80
+Dump of assembler code from 0x103e8 to 0x10438:
+   0x000103e8 <main+0>:	28 10 9f e5	ldr	r1, [pc, #40]	; 0x10418 <addr_of_myvar1>
+=> 0x000103ec <main+4>:	03 30 a0 e3	mov	r3, #3
+   0x000103f0 <main+8>:	00 30 81 e5	str	r3, [r1]
+   0x000103f4 <main+12>:	20 20 9f e5	ldr	r2, [pc, #32]	; 0x1041c <addr_of_myvar2>
+   0x000103f8 <main+16>:	04 30 a0 e3	mov	r3, #4
+   0x000103fc <main+20>:	00 30 82 e5	str	r3, [r2]
+   0x00010400 <main+24>:	10 10 9f e5	ldr	r1, [pc, #16]	; 0x10418 <addr_of_myvar1>
+   0x00010404 <main+28>:	00 10 91 e5	ldr	r1, [r1]
+   0x00010408 <main+32>:	0c 20 9f e5	ldr	r2, [pc, #12]	; 0x1041c <addr_of_myvar2>
+   0x0001040c <main+36>:	00 20 92 e5	ldr	r2, [r2]
+   0x00010410 <main+40>:	02 00 81 e0	add	r0, r1, r2
+   0x00010414 <main+44>:	1e ff 2f e1	bx	lr
+   0x00010418 <addr_of_myvar1+0>:	b8 05 02 00			; <UNDEFINED> instruction: 0x000205b8
+   0x0001041c <addr_of_myvar2+0>:	bc 05 02 00			; <UNDEFINED> instruction: 0x000205bc
+   0x00010420 <__libc_csu_init+0>:	f8 43 2d e9	push	{r3, r4, r5, r6, r7, r8, r9, lr}
+   0x00010424 <__libc_csu_init+4>:	00 70 a0 e1	mov	r7, r0
+   0x00010428 <__libc_csu_init+8>:	4c 60 9f e5	ldr	r6, [pc, #76]	; 0x1047c <__libc_csu_init+92>
+   0x0001042c <__libc_csu_init+12>:	4c 50 9f e5	ldr	r5, [pc, #76]	; 0x10480 <__libc_csu_init+96>
+   0x00010430 <__libc_csu_init+16>:	06 60 8f e0	add	r6, pc, r6
+   0x00010434 <__libc_csu_init+20>:	05 50 8f e0	add	r5, pc, r5
+End of assembler dump.
+(gdb) si
+0x000103f0 in main ()
+(gdb) disass /r 0x000205b8,+20
+Dump of assembler code from 0x205b8 to 0x205cc:
+   0x000205b8:	00 00 00 00	andeq	r0, r0, r0
+   0x000205bc:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c0 <completed.9004+0>:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c4:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c8:	00 00 00 00	andeq	r0, r0, r0
+End of assembler dump.
+(gdb) disass /r 0x000103e8,+60
+Dump of assembler code from 0x103e8 to 0x10424:
+   0x000103e8 <main+0>:	28 10 9f e5	ldr	r1, [pc, #40]	; 0x10418 <addr_of_myvar1>
+   0x000103ec <main+4>:	03 30 a0 e3	mov	r3, #3
+=> 0x000103f0 <main+8>:	00 30 81 e5	str	r3, [r1]
+   0x000103f4 <main+12>:	20 20 9f e5	ldr	r2, [pc, #32]	; 0x1041c <addr_of_myvar2>
+   0x000103f8 <main+16>:	04 30 a0 e3	mov	r3, #4
+   0x000103fc <main+20>:	00 30 82 e5	str	r3, [r2]
+   0x00010400 <main+24>:	10 10 9f e5	ldr	r1, [pc, #16]	; 0x10418 <addr_of_myvar1>
+   0x00010404 <main+28>:	00 10 91 e5	ldr	r1, [r1]
+   0x00010408 <main+32>:	0c 20 9f e5	ldr	r2, [pc, #12]	; 0x1041c <addr_of_myvar2>
+   0x0001040c <main+36>:	00 20 92 e5	ldr	r2, [r2]
+   0x00010410 <main+40>:	02 00 81 e0	add	r0, r1, r2
+   0x00010414 <main+44>:	1e ff 2f e1	bx	lr
+   0x00010418 <addr_of_myvar1+0>:	b8 05 02 00			; <UNDEFINED> instruction: 0x000205b8
+   0x0001041c <addr_of_myvar2+0>:	bc 05 02 00			; <UNDEFINED> instruction: 0x000205bc
+   0x00010420 <__libc_csu_init+0>:	f8 43 2d e9	push	{r3, r4, r5, r6, r7, r8, r9, lr}
+End of assembler dump.
+(gdb) disass /r 0x000205b8,+20
+Dump of assembler code from 0x205b8 to 0x205cc:
+   0x000205b8:	00 00 00 00	andeq	r0, r0, r0
+   0x000205bc:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c0 <completed.9004+0>:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c4:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c8:	00 00 00 00	andeq	r0, r0, r0
+End of assembler dump.
+(gdb) si
+0x000103f4 in main ()
+(gdb) disass /r 0x000205b8,+20
+Dump of assembler code from 0x205b8 to 0x205cc:
+   0x000205b8:	03 00 00 00	andeq	r0, r0, r3
+   0x000205bc:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c0 <completed.9004+0>:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c4:	00 00 00 00	andeq	r0, r0, r0
+   0x000205c8:	00 00 00 00	andeq	r0, r0, r0
+End of assembler dump.
+(gdb) disass /r 0x000103e8,+60
+Dump of assembler code from 0x103e8 to 0x10424:
+   0x000103e8 <main+0>:	28 10 9f e5	ldr	r1, [pc, #40]	; 0x10418 <addr_of_myvar1>
+   0x000103ec <main+4>:	03 30 a0 e3	mov	r3, #3
+   0x000103f0 <main+8>:	00 30 81 e5	str	r3, [r1]
+=> 0x000103f4 <main+12>:	20 20 9f e5	ldr	r2, [pc, #32]	; 0x1041c <addr_of_myvar2>
+   0x000103f8 <main+16>:	04 30 a0 e3	mov	r3, #4
+   0x000103fc <main+20>:	00 30 82 e5	str	r3, [r2]
+   0x00010400 <main+24>:	10 10 9f e5	ldr	r1, [pc, #16]	; 0x10418 <addr_of_myvar1>
+   0x00010404 <main+28>:	00 10 91 e5	ldr	r1, [r1]
+   0x00010408 <main+32>:	0c 20 9f e5	ldr	r2, [pc, #12]	; 0x1041c <addr_of_myvar2>
+   0x0001040c <main+36>:	00 20 92 e5	ldr	r2, [r2]
+   0x00010410 <main+40>:	02 00 81 e0	add	r0, r1, r2
+   0x00010414 <main+44>:	1e ff 2f e1	bx	lr
+   0x00010418 <addr_of_myvar1+0>:	b8 05 02 00			; <UNDEFINED> instruction: 0x000205b8
+   0x0001041c <addr_of_myvar2+0>:	bc 05 02 00			; <UNDEFINED> instruction: 0x000205bc
+   0x00010420 <__libc_csu_init+0>:	f8 43 2d e9	push	{r3, r4, r5, r6, r7, r8, r9, lr}
+End of assembler dump.
+(gdb) 
+
+*/
+
+/* 
+
+(gdb) stop display
+(gdb) display /r *0x00205bc
+3: *0x00205bc = 0
+(gdb) display /r *0x00205b8
+4: *0x00205b8 = 3
+(gdb) si
+0x000103fc in main ()
+4: *0x00205b8 = 3
+3: *0x00205bc = 0
+2: 0x00205bc = 132540
+1: 0x00205b8 = 132536
+(gdb) si
+0x00010400 in main ()
+4: *0x00205b8 = 3
+3: *0x00205bc = 4
+2: 0x00205bc = 132540
+1: 0x00205b8 = 132536
+(gdb) si
+0x00010404 in main ()
+4: *0x00205b8 = 3
+3: *0x00205bc = 4
+2: 0x00205bc = 132540
+1: 0x00205b8 = 132536
+(gdb) 
+
+*/
+
+/* ============
+
+
+pi@raspberrypi:~ $ cd ch03
+bash: cd: ch03: No such file or directory
+pi@raspberrypi:~ $ ls
+Desktop    Downloads  Makefile  Pictures  python_games  Templates
+Documents  load01.s   Music     Public    store01.s     Videos
+pi@raspberrypi:~ $ mkdir ch03
+pi@raspberrypi:~ $ mv M
+Makefile  Music/    
+pi@raspberrypi:~ $ mv Makefile ch03
+pi@raspberrypi:~ $ mv load01.s ch03
+pi@raspberrypi:~ $ mv store01.s ch03
+pi@raspberrypi:~ $ cd ch03
+pi@raspberrypi:~/ch03 $ make
+as -o load01.o load01.s
+gcc -o load01 load01.o
+as -o store01.o store01.s
+gcc -o store01 store01.o
+pi@raspberrypi:~/ch03 $ make gdb2
+gdb --args ./store01
+GNU gdb (Raspbian 7.7.1+dfsg-5) 7.7.1
+Copyright (C) 2014 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "arm-linux-gnueabihf".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from ./store01...(no debugging symbols found)...done.
+(gdb) start
+Temporary breakpoint 1 at 0x103e8
+Starting program: /home/pi/ch03/store01 
+
+Temporary breakpoint 1, 0x000103e8 in main ()
+(gdb) disass
+Dump of assembler code for function main:
+=> 0x000103e8 <+0>:	ldr	r1, [pc, #40]	; 0x10418 <addr_of_myvar1>
+   0x000103ec <+4>:	mov	r3, #3
+   0x000103f0 <+8>:	str	r3, [r1]
+   0x000103f4 <+12>:	ldr	r2, [pc, #32]	; 0x1041c <addr_of_myvar2>
+   0x000103f8 <+16>:	mov	r3, #4
+   0x000103fc <+20>:	str	r3, [r2]
+   0x00010400 <+24>:	ldr	r1, [pc, #16]	; 0x10418 <addr_of_myvar1>
+   0x00010404 <+28>:	ldr	r1, [r1]
+   0x00010408 <+32>:	ldr	r2, [pc, #12]	; 0x1041c <addr_of_myvar2>
+   0x0001040c <+36>:	ldr	r2, [r2]
+   0x00010410 <+40>:	add	r0, r1, r2
+   0x00010414 <+44>:	bx	lr
+End of assembler dump.
+(gdb) disass pc,+80
+No symbol "pc" in current context.
+(gdb) disass [pc],+80
+A syntax error in expression, near `[pc],+80'.
+(gdb) disass [pc]
+A syntax error in expression, near `[pc]'.
+(gdb) disass pc
+No symbol "pc" in current context.
+(gdb) disass 0x103e8,+80
+Dump of assembler code from 0x103e8 to 0x10438:
+=> 0x000103e8 <main+0>:	ldr	r1, [pc, #40]	; 0x10418 <addr_of_myvar1>
+   0x000103ec <main+4>:	mov	r3, #3
+   0x000103f0 <main+8>:	str	r3, [r1]
+   0x000103f4 <main+12>:	ldr	r2, [pc, #32]	; 0x1041c <addr_of_myvar2>
+   0x000103f8 <main+16>:	mov	r3, #4
+   0x000103fc <main+20>:	str	r3, [r2]
+   0x00010400 <main+24>:	ldr	r1, [pc, #16]	; 0x10418 <addr_of_myvar1>
+   0x00010404 <main+28>:	ldr	r1, [r1]
+   0x00010408 <main+32>:	ldr	r2, [pc, #12]	; 0x1041c <addr_of_myvar2>
+   0x0001040c <main+36>:	ldr	r2, [r2]
+   0x00010410 <main+40>:	add	r0, r1, r2
+   0x00010414 <main+44>:	bx	lr
+   0x00010418 <addr_of_myvar1+0>:			; <UNDEFINED> instruction: 0x000205b8
+   0x0001041c <addr_of_myvar2+0>:			; <UNDEFINED> instruction: 0x000205bc
+   0x00010420 <__libc_csu_init+0>:	push	{r3, r4, r5, r6, r7, r8, r9, lr}
+   0x00010424 <__libc_csu_init+4>:	mov	r7, r0
+---Type <return> to continue, or q <return> to quit---q
+Quit
+(gdb) disass /r 0x103e8,+80
+Dump of assembler code from 0x103e8 to 0x10438:
+=> 0x000103e8 <main+0>:	28 10 9f e5	ldr	r1, [pc, #40]	; 0x10418 <addr_of_myvar1>
+   0x000103ec <main+4>:	03 30 a0 e3	mov	r3, #3
+   0x000103f0 <main+8>:	00 30 81 e5	str	r3, [r1]
+   0x000103f4 <main+12>:	20 20 9f e5	ldr	r2, [pc, #32]	; 0x1041c <addr_of_myvar2>
+   0x000103f8 <main+16>:	04 30 a0 e3	mov	r3, #4
+   0x000103fc <main+20>:	00 30 82 e5	str	r3, [r2]
+   0x00010400 <main+24>:	10 10 9f e5	ldr	r1, [pc, #16]	; 0x10418 <addr_of_myvar1>
+   0x00010404 <main+28>:	00 10 91 e5	ldr	r1, [r1]
+   0x00010408 <main+32>:	0c 20 9f e5	ldr	r2, [pc, #12]	; 0x1041c <addr_of_myvar2>
+   0x0001040c <main+36>:	00 20 92 e5	ldr	r2, [r2]
+   0x00010410 <main+40>:	02 00 81 e0	add	r0, r1, r2
+   0x00010414 <main+44>:	1e ff 2f e1	bx	lr
+   0x00010418 <addr_of_myvar1+0>:	b8 05 02 00			; <UNDEFINED> instruction: 0x000205b8
+   0x0001041c <addr_of_myvar2+0>:	bc 05 02 00			; <UNDEFINED> instruction: 0x000205bc
+   0x00010420 <__libc_csu_init+0>:	f8 43 2d e9	push	{r3, r4, r5, r6, r7, r8, r9, lr}
+---Type <return> to continue, or q <return> to quit---q
+Quit
+(gdb) watch 0x000205b8
+Cannot watch constant value `0x000205b8'.
+(gdb) info watch
+No watchpoints.
+(gdb) watch *0x000205b8
+Hardware watchpoint 2: *0x000205b8
+(gdb) watch *0x000205bc
+Watchpoint 3: *0x000205bc
+(gdb) si
+0x000103ec in main ()
+(gdb) si
+0x000103f0 in main ()
+(gdb) si
+Hardware watchpoint 2: *0x000205b8
+
+Old value = 0
+New value = 3
+0x000103f8 in main ()
+(gdb) si
+0x000103fc in main ()
+(gdb) si
+Watchpoint 3: *0x000205bc
+
+Old value = 0
+New value = 4
+0x00010400 in main ()
+(gdb) info all-registers 
+r0             0x1	1
+r1             0x205b8	132536
+r2             0x205bc	132540
+r3             0x4	4
+r4             0x0	0
+r5             0x0	0
+r6             0x102c0	66240
+r7             0x0	0
+r8             0x0	0
+r9             0x0	0
+r10            0xb6fff000	3070226432
+r11            0x0	0
+r12            0xb6fa4000	3069853696
+sp             0xbefff420	0xbefff420
+lr             0xb6e7f294	-1226313068
+pc             0x10400	0x10400 <main+24>
+cpsr           0x60000010	1610612752
+d0             0	(raw 0x0000000000000000)
+d1             0	(raw 0x0000000000000000)
+d2             0	(raw 0x0000000000000000)
+d3             0	(raw 0x0000000000000000)
+d4             0	(raw 0x0000000000000000)
+d5             0	(raw 0x0000000000000000)
+---Type <return> to continue, or q <return> to quit---q
+Quit
+(gdb) si
+0x00010404 in main ()
+(gdb) info all-registers 
+r0             0x1	1
+r1             0x205b8	132536
+r2             0x205bc	132540
+r3             0x4	4
+r4             0x0	0
+r5             0x0	0
+r6             0x102c0	66240
+r7             0x0	0
+r8             0x0	0
+r9             0x0	0
+r10            0xb6fff000	3070226432
+r11            0x0	0
+r12            0xb6fa4000	3069853696
+sp             0xbefff420	0xbefff420
+lr             0xb6e7f294	-1226313068
+pc             0x10404	0x10404 <main+28>
+cpsr           0x60000010	1610612752
+d0             0	(raw 0x0000000000000000)
+d1             0	(raw 0x0000000000000000)
+d2             0	(raw 0x0000000000000000)
+d3             0	(raw 0x0000000000000000)
+d4             0	(raw 0x0000000000000000)
+d5             0	(raw 0x0000000000000000)
+---Type <return> to continue, or q <return> to quit---q
+Quit
+(gdb) si
+0x00010408 in main ()
+(gdb) info all-registers 
+r0             0x1	1
+r1             0x3	3
+r2             0x205bc	132540
+r3             0x4	4
+r4             0x0	0
+r5             0x0	0
+r6             0x102c0	66240
+r7             0x0	0
+r8             0x0	0
+r9             0x0	0
+r10            0xb6fff000	3070226432
+r11            0x0	0
+r12            0xb6fa4000	3069853696
+sp             0xbefff420	0xbefff420
+lr             0xb6e7f294	-1226313068
+pc             0x10408	0x10408 <main+32>
+cpsr           0x60000010	1610612752
+d0             0	(raw 0x0000000000000000)
+d1             0	(raw 0x0000000000000000)
+d2             0	(raw 0x0000000000000000)
+d3             0	(raw 0x0000000000000000)
+d4             0	(raw 0x0000000000000000)
+d5             0	(raw 0x0000000000000000)
+---Type <return> to continue, or q <return> to quit---q
+Quit
+(gdb) si
+0x0001040c in main ()
+(gdb) info all-registers 
+r0             0x1	1
+r1             0x3	3
+r2             0x205bc	132540
+r3             0x4	4
+r4             0x0	0
+r5             0x0	0
+r6             0x102c0	66240
+r7             0x0	0
+r8             0x0	0
+r9             0x0	0
+r10            0xb6fff000	3070226432
+r11            0x0	0
+r12            0xb6fa4000	3069853696
+sp             0xbefff420	0xbefff420
+lr             0xb6e7f294	-1226313068
+pc             0x1040c	0x1040c <main+36>
+cpsr           0x60000010	1610612752
+d0             0	(raw 0x0000000000000000)
+d1             0	(raw 0x0000000000000000)
+d2             0	(raw 0x0000000000000000)
+d3             0	(raw 0x0000000000000000)
+d4             0	(raw 0x0000000000000000)
+d5             0	(raw 0x0000000000000000)
+---Type <return> to continue, or q <return> to quit---q
+Quit
+(gdb) si
+0x00010410 in main ()
+(gdb) info all-registers 
+r0             0x1	1
+r1             0x3	3
+r2             0x4	4
+r3             0x4	4
+r4             0x0	0
+r5             0x0	0
+r6             0x102c0	66240
+r7             0x0	0
+r8             0x0	0
+r9             0x0	0
+r10            0xb6fff000	3070226432
+r11            0x0	0
+r12            0xb6fa4000	3069853696
+sp             0xbefff420	0xbefff420
+lr             0xb6e7f294	-1226313068
+pc             0x10410	0x10410 <main+40>
+cpsr           0x60000010	1610612752
+d0             0	(raw 0x0000000000000000)
+d1             0	(raw 0x0000000000000000)
+d2             0	(raw 0x0000000000000000)
+d3             0	(raw 0x0000000000000000)
+d4             0	(raw 0x0000000000000000)
+d5             0	(raw 0x0000000000000000)
+---Type <return> to continue, or q <return> to quit---q
+Quit
+(gdb) si
+0x00010414 in main ()
+(gdb) info all-registers 
+r0             0x7	7
+r1             0x3	3
+r2             0x4	4
+r3             0x4	4
+r4             0x0	0
+r5             0x0	0
+r6             0x102c0	66240
+r7             0x0	0
+r8             0x0	0
+r9             0x0	0
+r10            0xb6fff000	3070226432
+r11            0x0	0
+r12            0xb6fa4000	3069853696
+sp             0xbefff420	0xbefff420
+lr             0xb6e7f294	-1226313068
+pc             0x10414	0x10414 <main+44>
+cpsr           0x60000010	1610612752
+d0             0	(raw 0x0000000000000000)
+d1             0	(raw 0x0000000000000000)
+d2             0	(raw 0x0000000000000000)
+d3             0	(raw 0x0000000000000000)
+d4             0	(raw 0x0000000000000000)
+d5             0	(raw 0x0000000000000000)
+---Type <return> to continue, or q <return> to quit---q
+Quit
+(gdb) si
+__libc_start_main (main=0xbefff574, argc=-1225113600, 
+    argv=0xb6e7f250 <__libc_start_main+208>, init=<optimized out>, 
+    fini=0x10484 <__libc_csu_fini>, rtld_fini=0xb6fdf408 <_dl_fini>, 
+    stack_end=0xbefff574) at libc-start.c:321
+321	libc-start.c: No such file or directory.
+(gdb) si
+__GI_exit (status=7) at exit.c:104
+104	exit.c: No such file or directory.
+(gdb) si
+103	in exit.c
+(gdb) si
+104	in exit.c
+(gdb) si
+0xb6e97b34	104	in exit.c
+(gdb) si
+0xb6e97b38	104	in exit.c
+(gdb) si
+__run_exit_handlers (status=7, listp=0xb6fa44ac <__exit_funcs>, 
+    run_list_atexit=run_list_atexit@entry=true) at exit.c:35
+35	in exit.c
+(gdb) si
+0xb6e979dc	35	in exit.c
+(gdb) si
+35	in exit.c
+(gdb) si
+0xb6e979e4	35	in exit.c
+(gdb) si
+0xb6e979e8	35	in exit.c
+(gdb) si
+0xb6e979ec	35	in exit.c
+(gdb) si
+40	in exit.c
+(gdb) si
+__GI___call_tls_dtors () at cxa_thread_atexit_impl.c:87
+87	cxa_thread_atexit_impl.c: No such file or directory.
+(gdb) si
+86	in cxa_thread_atexit_impl.c
+(gdb) si
+87	in cxa_thread_atexit_impl.c
+(gdb) si
+0xb6e98118	87	in cxa_thread_atexit_impl.c
+(gdb) si
+0xb6e7cbdc in ?? () from /lib/arm-linux-gnueabihf/libc.so.6
+(gdb) si
+0xb6e7cbe0 in ?? () from /lib/arm-linux-gnueabihf/libc.so.6
+(gdb) si
+0xb6e7cbe4 in ?? () from /lib/arm-linux-gnueabihf/libc.so.6
+(gdb) si
+0xb6e7cbb0 in ?? () from /lib/arm-linux-gnueabihf/libc.so.6
+(gdb) si
+0xb6e7cbb4 in ?? () from /lib/arm-linux-gnueabihf/libc.so.6
+(gdb) si
+0xb6e7cbb8 in ?? () from /lib/arm-linux-gnueabihf/libc.so.6
+(gdb) si
+Cannot access memory at address 0x0
+0xb6e7cbbc in ?? () from /lib/arm-linux-gnueabihf/libc.so.6
+(gdb) si
+_dl_runtime_resolve () at ../ports/sysdeps/arm/dl-trampoline.S:40
+40	../ports/sysdeps/arm/dl-trampoline.S: No such file or directory.
+(gdb) si
+48	in ../ports/sysdeps/arm/dl-trampoline.S
+(gdb) si
+52	in ../ports/sysdeps/arm/dl-trampoline.S
+(gdb) si
+53	in ../ports/sysdeps/arm/dl-trampoline.S
+(gdb) si
+54	in ../ports/sysdeps/arm/dl-trampoline.S
+(gdb) si
+57	in ../ports/sysdeps/arm/dl-trampoline.S
+(gdb) si
+_dl_fixup (l=0xb6ffc400, reloc_arg=16) at dl-runtime.c:72
+72	dl-runtime.c: No such file or directory.
+(gdb) si
+66	in dl-runtime.c
+(gdb) si
+0xb6fde2f0	66	in dl-runtime.c
+(gdb) si
+72	in dl-runtime.c
+(gdb) si
+68	in dl-runtime.c
+(gdb) si
+72	in dl-runtime.c
+(gdb) si
+74	in dl-runtime.c
+(gdb) si
+73	in dl-runtime.c
+(gdb) si
+69	in dl-runtime.c
+(gdb) si
+73	in dl-runtime.c
+(gdb) si
+0xb6fde310	73	in dl-runtime.c
+(gdb) si
+66	in dl-runtime.c
+(gdb) si
+79	in dl-runtime.c
+(gdb) si
+73	in dl-runtime.c
+(gdb) si
+79	in dl-runtime.c
+(gdb) si
+69	in dl-runtime.c
+(gdb) si
+74	in dl-runtime.c
+(gdb) si
+73	in dl-runtime.c
+(gdb) si
+79	in dl-runtime.c
+(gdb) si
+83	in dl-runtime.c
+(gdb) si
+0xb6fde338	83	in dl-runtime.c
+(gdb) si
+0xb6fde33c	83	in dl-runtime.c
+(gdb) si
+87	in dl-runtime.c
+(gdb) si
+0xb6fde344	87	in dl-runtime.c
+(gdb) si
+0xb6fde348	87	in dl-runtime.c
+(gdb) si
+91	in dl-runtime.c
+(gdb) si
+0xb6fde350	91	in dl-runtime.c
+(gdb) si
+92	in dl-runtime.c
+(gdb) si
+91	in dl-runtime.c
+(gdb) si
+0xb6fde35c	91	in dl-runtime.c
+(gdb) si
+92	in dl-runtime.c
+(gdb) si
+93	in dl-runtime.c
+(gdb) si
+94	in dl-runtime.c
+(gdb) si
+0xb6fde36c	94	in dl-runtime.c
+(gdb) si
+101	in dl-runtime.c
+(gdb) si
+__aeabi_read_tp () at ../ports/sysdeps/unix/sysv/linux/arm/aeabi_read_tp.S:52
+52	../ports/sysdeps/unix/sysv/linux/arm/aeabi_read_tp.S: No such file or directory.
+(gdb) si
+53	in ../ports/sysdeps/unix/sysv/linux/arm/aeabi_read_tp.S
+(gdb) si
+0xb6fde374 in _dl_fixup (l=0xb6ffc400, reloc_arg=<optimized out>)
+    at dl-runtime.c:101
+101	dl-runtime.c: No such file or directory.
+(gdb) si
+0xb6fde378	101	in dl-runtime.c
+(gdb) si
+0xb6fde37c	101	in dl-runtime.c
+(gdb) si
+100	in dl-runtime.c
+(gdb) si
+101	in dl-runtime.c
+(gdb) si
+111	in dl-runtime.c
+(gdb) si
+0xb6fde38c	111	in dl-runtime.c
+(gdb) si
+0xb6fde390	111	in dl-runtime.c
+(gdb) si
+0xb6fde394	111	in dl-runtime.c
+(gdb) si
+0xb6fde398	111	in dl-runtime.c
+(gdb) si
+0xb6fde39c	111	in dl-runtime.c
+(gdb) si
+0xb6fde3a0	111	in dl-runtime.c
+(gdb) si
+0xb6fde3a4	111	in dl-runtime.c
+(gdb) si
+0xb6fde3a8	111	in dl-runtime.c
+(gdb) si
+0xb6fde3ac	111	in dl-runtime.c
+(gdb) si
+0xb6fde3b0	111	in dl-runtime.c
+(gdb) si
+0xb6fde3b4	111	in dl-runtime.c
+(gdb) si
+^[[A_dl_lookup_symbol_x (undef_name=0xb6e77a86 "__tls_get_addr", 
+    undef_map=undef_map@entry=0xb6ffc400, ref=0xbefff3ac, 
+    ref@entry=0xbefff3a4, symbol_scope=0xb6ffc5b8, version=0xb6ffc888, 
+    type_class=type_class@entry=1, flags=1, skip_map=skip_map@entry=0x0)
+    at dl-lookup.c:714
+714	dl-lookup.c: No such file or directory.
+(gdb) si
+0xb6fd93e0	714	in dl-lookup.c
+(gdb) si
+0xb6fd93e4	714	in dl-lookup.c
+(gdb) si
+714	in dl-lookup.c
+(gdb) si
+dl_new_hash (s=<optimized out>) at dl-lookup.c:476
+476	in dl-lookup.c
+(gdb) si
+_dl_lookup_symbol_x (undef_name=0xb6e77a86 "__tls_get_addr", 
+    undef_map=undef_map@entry=0xb6ffc400, ref=0xbefff3ac, 
+    ref@entry=0xbefff3a4, symbol_scope=0xb6ffc5b8, version=0xb6ffc888, 
+    type_class=type_class@entry=1, flags=1, skip_map=skip_map@entry=0x0)
+    at dl-lookup.c:714
+714	in dl-lookup.c
+(gdb) si
+0xb6fd93f4	714	in dl-lookup.c
+(gdb) si
+dl_new_hash (s=0xb6e77a86 "__tls_get_addr") at dl-lookup.c:476
+476	in dl-lookup.c
+(gdb) si
+_dl_lookup_symbol_x (undef_name=0xb6e77a86 "__tls_get_addr", 
+    undef_map=undef_map@entry=0xb6ffc400, ref=0xbefff3ac, 
+    ref@entry=0xbefff3a4, symbol_scope=0xb6ffc5b8, version=0xb6ffc888, 
+    type_class=type_class@entry=1, flags=1, skip_map=skip_map@entry=0x0)
+    at dl-lookup.c:714
+714	in dl-lookup.c
+(gdb) si
+dl_new_hash (s=0xb6e77a86 "__tls_get_addr") at dl-lookup.c:475
+475	in dl-lookup.c
+(gdb) si
+476	in dl-lookup.c
+(gdb) si
+0xb6fd9408	476	in dl-lookup.c
+(gdb) si
+477	in dl-lookup.c
+(gdb) si
+0xb6fd9410	477	in dl-lookup.c
+(gdb) si
+476	in dl-lookup.c
+(gdb) si
+0xb6fd9418	476	in dl-lookup.c
+(gdb) si
+0xb6fd941c	476	in dl-lookup.c
+(gdb) si
+477	in dl-lookup.c
+(gdb) si
+0xb6fd9410	477	in dl-lookup.c
+(gdb) si
+476	in dl-lookup.c
+(gdb) si
+0xb6fd9418	476	in dl-lookup.c
+(gdb) si
+0xb6fd941c	476	in dl-lookup.c
+(gdb) si
+477	in dl-lookup.c
+(gdb) si
+0xb6fd9410	477	in dl-lookup.c
+(gdb) si
+476	in dl-lookup.c
+(gdb) 
+0xb6fd9418	476	in dl-lookup.c
+(gdb) 
+
+...............................................................
+
+0xb6fde3d4	125	in dl-runtime.c
+(gdb) 
+0xb6fde3d8
+	125	in dl-runtime.c
+(gdb) 
+0xb6fde3dc	125	in dl-runtime.c
+(gdb) 
+0xb6fde3e0	125	in dl-runtime.c
+(gdb) 
+0xb6fde3e4	125	in dl-runtime.c
+(gdb) 
+141
+	in dl-runtime.c
+(gdb) 
+0xb6fde3ec	141	in dl-runtime.c
+(gdb) 
+0xb6fde3f0	141	in dl-runtime.c
+(gdb) 
+0xb6fde3f4	141	in dl-runtime.c
+(gdb) 
+145
+	in dl-runtime.c
+(gdb) 
+149	in dl-runtime.c
+(gdb) 
+145
+	in dl-runtime.c
+(gdb) 
+0xb6fde404	145	in dl-runtime.c
+(gdb) 
+
+0xb6fde408	145	in dl-runtime.c
+(gdb) 
+elf_machine_fixup_plt (map=0xb6ffc110, t=<optimized out>, 
+    reloc=<optimized out>, value=3068755452, reloc_addr=0xb6fce4f0)
+    at ../ports/sysdeps/arm/dl-machine.h:265
+265	../ports/sysdeps/arm/dl-machine.h: No such file or directory.
+(gdb) 
+_dl_fixup (l=0xb6ffc110, reloc_arg=<optimized out>) at dl-runtime.c:149
+149	dl-runtime.c: No such file or directory.
+(gdb) 
+
+0xb6fde414 in _dl_fixup (l=0xb6ffc110, reloc_arg=<optimized out>)
+    at dl-runtime.c:149
+149	in dl-runtime.c
+(gdb) 
+_dl_runtime_resolve () at ../ports/sysdeps/arm/dl-trampoline.S:60
+
+60	../ports/sysdeps/arm/dl-trampoline.S: No such file or directory.
+
+(gdb) 
+64	in ../ports/sysdeps/arm/dl-trampoline.S
+(gdb) 
+68	in ../ports/sysdeps/arm/dl-trampoline.S
+(gdb) 
+
+__cxa_finalize (d=0xb6fce50c) at cxa_finalize.c:31
+31	cxa_finalize.c: No such file or directory.
+(gdb) 
+0xb6e97e00	31	in cxa_finalize.c
+(gdb) 
+51
+	in cxa_finalize.c
+(gdb) 
+31	in cxa_finalize.c
+(gdb) 
+35	in cxa_finalize.c
+(gdb) 
+31
+	in cxa_finalize.c
+(gdb) 
+51	in cxa_finalize.c
+(gdb) 
+31
+	in cxa_finalize.c
+(gdb) 
+48	in cxa_finalize.c
+(gdb) 
+0xb6e97e20
+	48	in cxa_finalize.c
+(gdb) 
+31	in cxa_finalize.c
+(gdb) 
+0xb6e97e28	31	in cxa_finalize.c
+(gdb) 
+35	in cxa_finalize.c
+(gdb) 
+0xb6e97e30	35	in cxa_finalize.c
+(gdb) 
+0xb6e97e34	35	in cxa_finalize.c
+(gdb) 
+0xb6e97e38	35	in cxa_finalize.c
+(gdb) 
+0xb6e97e3c
+	35	in cxa_finalize.c
+(gdb) 
+0xb6e97e40	35	in cxa_finalize.c
+(gdb) 
+39
+	in cxa_finalize.c
+(gdb) 
+0xb6e97e48	39	in cxa_finalize.c
+(gdb) 
+0xb6e97e4c	39	in cxa_finalize.c
+(gdb) 
+0xb6e97e50	39	in cxa_finalize.c
+(gdb) 
+0xb6e97e54	39	in cxa_finalize.c
+(gdb) 
+0xb6e97e58
+	39	in cxa_finalize.c
+(gdb) 
+0xb6e97e5c	39	in cxa_finalize.c
+(gdb) 
+
+0xb6e97e60	39	in cxa_finalize.c
+(gdb) 
+35	in cxa_finalize.c
+(gdb) 
+0xb6e97f18	35	in cxa_finalize.c
+(gdb) 
+0xb6e97f1c
+	35	in cxa_finalize.c
+(gdb) 
+67	in cxa_finalize.c
+(gdb) 
+0xb6e97f24
+	67	in cxa_finalize.c
+(gdb) 
+0xb6e97f28	67	in cxa_finalize.c
+(gdb) 
+73	in cxa_finalize.c
+(gdb) 
+67	in cxa_finalize.c
+(gdb) 
+71
+	in cxa_finalize.c
+(gdb) 
+0xb6e97f38	71	in cxa_finalize.c
+(gdb) 
+0xb6e97f3c	71	in cxa_finalize.c
+(gdb) 
+0xb6e97f40	71	in cxa_finalize.c
+(gdb) 
+0xb6e97f44
+	71	in cxa_finalize.c
+(gdb) 
+0xb6e97f48	71	in cxa_finalize.c
+(gdb) 
+
+0xb6e97f4c	71	in cxa_finalize.c
+(gdb) 
+67	in cxa_finalize.c
+(gdb) 
+0xb6e97f84	67	in cxa_finalize.c
+(gdb) 
+0xb6e97f88	67	in cxa_finalize.c
+(gdb) 
+79
+	in cxa_finalize.c
+(gdb) 
+0xb6e97f90	79	in cxa_finalize.c
+(gdb) 
+80	in cxa_finalize.c
+(gdb) 
+0xb6e97f98	80	in cxa_finalize.c
+(gdb) 
+
+__unregister_atfork (dso_handle=dso_handle@entry=0xb6fce50c)
+    at ../nptl/sysdeps/unix/sysv/linux/unregister-atfork.c:36
+36	../nptl/sysdeps/unix/sysv/linux/unregister-atfork.c: No such file or directory.
+(gdb) 
+28	in ../nptl/sysdeps/unix/sysv/linux/unregister-atfork.c
+(gdb) 
+0xb6f4620c
+	28	in ../nptl/sysdeps/unix/sysv/linux/unregister-atfork.c
+(gdb) 
+0xb6f46210	28	in ../nptl/sysdeps/unix/sysv/linux/unregister-atfork.c
+(gdb) 
+36	in ../nptl/sysdeps/unix/sysv/linux/unregister-atfork.c
+(gdb) 
+28	in ../nptl/sysdeps/unix/sysv/linux/unregister-atfork.c
+(gdb) 
+36
+	in ../nptl/sysdeps/unix/sysv/linux/unregister-atfork.c
+(gdb) 
+39	in ../nptl/sysdeps/unix/sysv/linux/unregister-atfork.c
+(gdb) 
+0xb6f46224
+	39	in ../nptl/sysdeps/unix/sysv/linux/unregister-atfork.c
+(gdb) 
+121	in ../nptl/sysdeps/unix/sysv/linux/unregister-atfork.c
+(gdb) 
+0xb6f46258
+	121	in ../nptl/sysdeps/unix/sysv/linux/unregister-atfork.c
+(gdb) 
+__cxa_finalize (d=0xb6fce50c) at cxa_finalize.c:82
+82	cxa_finalize.c: No such file or directory.
+(gdb) 
+0xb6e97fa0 in __cxa_finalize (d=0xb6fce50c) at cxa_finalize.c:82
+82	in cxa_finalize.c
+(gdb) 
+
+0xb6fba664 in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) 
+0xb6fba58c in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+
+
+(gdb) 
+0xb6fba590 in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) 
+0xb6fba594 in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) 
+
+
+0xb6fba598 in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) 
+
+
+0xb6fba59c in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) 
+
+0xb6fba5a0 in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+
+(gdb) 
+0xb6fba5a4 in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) 
+
+
+0xb6fba5a8 in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) 
+
+
+0xb6fba5ac in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) 
+0xb6fba5b0 in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+
+(gdb) 
+
+
+0xb6fba668 in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) 
+0xb6fba66c in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) 
+
+0xb6fba670 in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) 
+
+
+0xb6fba674 in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) 
+
+0xb6fba678 in ?? () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) 
+_dl_fini () at dl-fini.c:251
+251	dl-fini.c: No such file or directory.
+(gdb) 
+0xb6fdf6c4
+
+	251	in dl-fini.c
+(gdb) 
+256	in dl-fini.c
+(gdb) 
+0xb6fdf6cc	256	in dl-fini.c
+(gdb) 
+0xb6fdf6d0	256	in dl-fini.c
+(gdb) 
+257	
+
+in dl-fini.c
+(gdb) 
+0xb6fdf6d8	257	in dl-fini.c
+(gdb) 
+0xb6fdf6dc	257	in dl-fini.c
+(gdb) 
+0xb6fdf6e0	257	in dl-fini.c
+(gdb) 
+
+
+0xb6fbe2c4 in _fini () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) 
+0xb6fbe2c8 in _fini () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+
+
+(gdb) 
+_dl_fini () at dl-fini.c:262
+262	in dl-fini.c
+(gdb) 
+0xb6fdf6e8	262	in dl-fini.c
+(gdb) 
+0xb6fdf6ec
+
+	262	in dl-fini.c
+(gdb) 
+0xb6fdf6f0	262	in dl-fini.c
+(gdb) 
+0xb6fdf6f4	262	in dl-fini.c
+(gdb) 
+0xb6fdf6f8	262	in dl-fini.c
+(gdb) 
+0xb6fdf6fc	
+
+262	in dl-fini.c
+(gdb) 
+278	in dl-fini.c
+(gdb) 
+223	in dl-fini.c
+(gdb) 
+278	in dl-fini.c
+(gdb) 
+223	in dl-fini.c
+(gdb) 
+278	in dl-fini.c
+(gdb) 
+223	in dl-fini.c
+(gdb) 
+225
+	in dl-fini.c
+(gdb) 
+227	in dl-fini.c
+(gdb) 
+0xb6fdf664
+	227	in dl-fini.c
+(gdb) 
+0xb6fdf668	227	in dl-fini.c
+(gdb) 
+233	in dl-fini.c
+(gdb) 
+230	in dl-fini.c
+(gdb) 
+233	in dl-fini.c
+(gdb) 
+230
+	in dl-fini.c
+(gdb) 
+233	in dl-fini.c
+(gdb) 
+234	in dl-fini.c
+(gdb) 
+0xb6fdf720	234	in dl-fini.c
+(gdb) 
+0xb6fdf724	234	in dl-fini.c
+(gdb) 
+262
+	in dl-fini.c
+(gdb) 
+0xb6fdf6e8	262	in dl-fini.c
+(gdb) 
+0xb6fdf6ec	262	in dl-fini.c
+(gdb) 
+0xb6fdf6f0	262	in dl-fini.c
+(gdb) 
+0xb6fdf6f4
+	262	in dl-fini.c
+(gdb) 
+0xb6fdf6f8	262	in dl-fini.c
+(gdb) 
+0xb6fdf6fc
+	262	in dl-fini.c
+(gdb) 
+278	in dl-fini.c
+(gdb) 
+223	in dl-fini.c
+(gdb) 
+278	in dl-fini.c
+(gdb) 
+223
+	in dl-fini.c
+(gdb) 
+278	in dl-fini.c
+(gdb) 
+223	in dl-fini.c
+(gdb) 
+225	in dl-fini.c
+(gdb) 
+227	in dl-fini.c
+(gdb) 
+0xb6fdf664
+	227	in dl-fini.c
+(gdb) 
+0xb6fdf668	227	in dl-fini.c
+(gdb) 
+233
+	in dl-fini.c
+(gdb) 
+230	in dl-fini.c
+(gdb) 
+233	in dl-fini.c
+(gdb) 
+230	in dl-fini.c
+(gdb) 
+233
+	in dl-fini.c
+(gdb) 
+234	in dl-fini.c
+(gdb) 
+0xb6fdf720	234	in dl-fini.c
+(gdb) 
+0xb6fdf724
+	234	in dl-fini.c
+(gdb) 
+262	in dl-fini.c
+(gdb) 
+0xb6fdf6e8	262	in dl-fini.c
+(gdb) 
+0xb6fdf6ec
+	262	in dl-fini.c
+(gdb) 
+0xb6fdf6f0	262	in dl-fini.c
+(gdb) 
+0xb6fdf6f4	262	in dl-fini.c
+(gdb) 
+0xb6fdf6f8
+	262	in dl-fini.c
+(gdb) 
+0xb6fdf6fc	262	in dl-fini.c
+(gdb) 
+278	in dl-fini.c
+(gdb) 
+223	in dl-fini.c
+(gdb) 
+278	in dl-fini.c
+(gdb) 
+223
+	in dl-fini.c
+(gdb) 
+278	in dl-fini.c
+(gdb) 
+223	in dl-fini.c
+(gdb) 
+0xb6fdf718	223	in dl-fini.c
+(gdb) 
+153	in dl-fini.c
+(gdb) 
+0xb6fdf4d0
+	153	in dl-fini.c
+(gdb) 
+0xb6fdf4d4	153	in dl-fini.c
+(gdb) 
+0xb6fdf4d8
+	153	in dl-fini.c
+(gdb) 
+0xb6fdf4dc	153	in dl-fini.c
+(gdb) 
+0xb6fdf4e0	153	in dl-fini.c
+(gdb) 
+0xb6fdf4e4
+	153	in dl-fini.c
+(gdb) 
+283	in dl-fini.c
+(gdb) 
+0xb6fdf7a8	283	in dl-fini.c
+(gdb) 
+0xb6fdf7ac	283	in dl-fini.c
+(gdb) 
+0xb6fdf7b0	283	in dl-fini.c
+(gdb) 
+0xb6fdf7b4	283	in dl-fini.c
+(gdb) 
+0xb6fdf7b8
+	283	in dl-fini.c
+(gdb) 
+0xb6fdf7bc	283	in dl-fini.c
+(gdb) 
+285	in dl-fini.c
+(gdb) 
+0xb6fdf7c4	285	in dl-fini.c
+(gdb) 
+0xb6fdf7c8	285	in dl-fini.c
+(gdb) 
+289
+	in dl-fini.c
+(gdb) 
+0xb6fdf7d0	289	in dl-fini.c
+(gdb) 
+0xb6fdf7d4
+	289	in dl-fini.c
+(gdb) 
+0xb6fdf7d8	289	in dl-fini.c
+(gdb) 
+0xb6fdf7dc	289	in dl-fini.c
+(gdb) 
+296
+	in dl-fini.c
+(gdb) 
+0xb6fdf7e4	296	in dl-fini.c
+(gdb) 
+__run_exit_handlers (status=7, listp=0xb6fa44ac <__exit_funcs>, 
+    run_list_atexit=run_list_atexit@entry=true) at exit.c:83
+83	exit.c: No such file or directory.
+(gdb) 
+0xb6e97a00
+	46	in exit.c
+(gdb) 
+50	in exit.c
+(gdb) 
+0xb6e97a08	50	in exit.c
+(gdb) 
+0xb6e97a0c	50	in exit.c
+(gdb) 
+87
+	in exit.c
+(gdb) 
+88	in exit.c
+(gdb) 
+87
+	in exit.c
+(gdb) 
+88	in exit.c
+(gdb) 
+94	in exit.c
+(gdb) 
+0xb6e97a58
+	94	in exit.c
+(gdb) 
+95	in exit.c
+(gdb) 
+0xb6e97a60
+	95	in exit.c
+(gdb) 
+0xb6e97a64	95	in exit.c
+(gdb) 
+0xb6e97a68	95	in exit.c
+(gdb) 
+0xb6e97a6c	95	in exit.c
+(gdb) 
+0xb6e97a70	95	in exit.c
+(gdb) 
+0xb6e97a74
+	95	in exit.c
+(gdb) 
+0xb6e97a78	95	in exit.c
+(gdb) 
+0xb6e97a7c
+	95	in exit.c
+(gdb) 
+0xb6e97a80	95	in exit.c
+(gdb) 
+0xb6e97a84	95	in exit.c
+(gdb) 
+0xb6e97a88	95	in exit.c
+(gdb) 
+0xb6e97a8c
+	95	in exit.c
+(gdb) 
+0xb6e97a90	95	in exit.c
+(gdb) 
+0xb6e97a94	95	in exit.c
+(gdb) 
+
+
+_IO_cleanup () at genops.c:1010
+
+1010	genops.c: No such file or directory.
+(gdb) 
+1013	in genops.c
+(gdb) 
+1010	in genops.c
+(gdb) 
+1013	in genops.c
+(gdb) 
+_IO_flush_all_lockp (do_lock=do_lock@entry=0) at genops.c:822
+
+
+822	in genops.c
+(gdb) 
+828	in genops.c
+(gdb) 
+822	in genops.c
+(gdb) 
+0xb6ed4708
+	822	in genops.c
+(gdb) 
+822	in genops.c
+(gdb) 
+0xb6ed4710
+	822	in genops.c
+(gdb) 
+828	in genops.c
+(gdb) 
+0xb6ed4718	828	in genops.c
+(gdb) 
+834
+	in genops.c
+(gdb) 
+833	in genops.c
+(gdb) 
+834
+	in genops.c
+(gdb) 
+833	in genops.c
+(gdb) 
+
+834	in genops.c
+(gdb) 
+833	in genops.c
+(gdb) 
+835	in genops.c
+(gdb) 
+
+0xb6ed47dc	835	in genops.c
+(gdb) 
+858	in genops.c
+(gdb) 
+853	in genops.c
+(gdb) 
+858
+	in genops.c
+(gdb) 
+823	in genops.c
+(gdb) 
+0xb6ed47f0	823	in genops.c
+(gdb) 
+
+838	in genops.c
+(gdb) 
+837	in genops.c
+(gdb) 
+838	in genops.c
+(gdb) 
+841	in genops.c
+(gdb) 
+
+0xb6ed48f4	841	in genops.c
+(gdb) 
+0xb6ed48f8	841	in genops.c
+(gdb) 
+0xb6ed48fc	841	in genops.c
+(gdb) 
+0xb6ed4900	841	in genops.c
+(gdb) 
+0xb6ed4904
+	841	in genops.c
+(gdb) 
+0xb6ed4908	841	in genops.c
+(gdb) 
+0xb6ed490c	841	in genops.c
+(gdb) 
+
+851	in genops.c
+(gdb) 
+0xb6ed4828	851	in genops.c
+(gdb) 
+855	in genops.c
+(gdb) 
+853	in genops.c
+(gdb) 
+855
+	in genops.c
+(gdb) 
+0xb6ed485c	855	in genops.c
+(gdb) 
+
+858	in genops.c
+(gdb) 
+862	in genops.c
+(gdb) 
+853	in genops.c
+(gdb) 
+835	in genops.c
+(gdb) 
+0xb6ed4870
+	835	in genops.c
+(gdb) 
+838	in genops.c
+(gdb) 
+837	in genops.c
+(gdb) 
+838
+	in genops.c
+(gdb) 
+841	in genops.c
+(gdb) 
+0xb6ed48f4	841	in genops.c
+(gdb) 
+0xb6ed48f8	841	in genops.c
+(gdb) 
+0xb6ed48fc	841	in genops.c
+(gdb) 
+0xb6ed4900
+	841	in genops.c
+(gdb) 
+0xb6ed4904	841	in genops.c
+(gdb) 
+0xb6ed4908	841	in genops.c
+(gdb) 
+0xb6ed490c	841	in genops.c
+(gdb) 
+851	in genops.c
+(gdb) 
+
+0xb6ed4828	851	in genops.c
+(gdb) 
+855	in genops.c
+(gdb) 
+853	in genops.c
+(gdb) 
+855	in genops.c
+(gdb) 
+
+0xb6ed485c	855	in genops.c
+(gdb) 
+858	in genops.c
+(gdb) 
+862	in genops.c
+(gdb) 
+853	in genops.c
+(gdb) 
+835	in genops.c
+(gdb) 
+0xb6ed4870
+	835	in genops.c
+(gdb) 
+838	in genops.c
+(gdb) 
+837	in genops.c
+(gdb) 
+838	in genops.c
+(gdb) 
+841
+	in genops.c
+(gdb) 
+0xb6ed48f4	841	in genops.c
+(gdb) 
+0xb6ed48f8	841	in genops.c
+(gdb) 
+0xb6ed48fc
+	841	in genops.c
+(gdb) 
+0xb6ed4900	841	in genops.c
+(gdb) 
+
+0xb6ed4904	841	in genops.c
+(gdb) 
+0xb6ed4908	841	in genops.c
+(gdb) 
+0xb6ed490c	841	in genops.c
+(gdb) 
+
+851	in genops.c
+(gdb) 
+0xb6ed4828	851	in genops.c
+(gdb) 
+855	in genops.c
+(gdb) 
+853
+	in genops.c
+(gdb) 
+855	in genops.c
+(gdb) 
+0xb6ed485c
+	855	in genops.c
+(gdb) 
+858	in genops.c
+(gdb) 
+862	in genops.c
+(gdb) 
+
+853	in genops.c
+(gdb) 
+835	in genops.c
+(gdb) 
+0xb6ed4870	835	in genops.c
+(gdb) 
+866	in genops.c
+(gdb) 
+0xb6ed4918	866	in genops.c
+(gdb) 
+868
+	in genops.c
+(gdb) 
+0xb6ed493c	868	in genops.c
+(gdb) 
+0xb6ed4940	868	in genops.c
+(gdb) 
+872	in genops.c
+(gdb) 
+0xb6ed4974
+	872	in genops.c
+(gdb) 
+Cannot access memory at address 0x0
+0xb6ed4978 in _IO_flush_all_lockp (do_lock=0) at genops.c:872
+872	in genops.c
+(gdb) 
+_IO_unbuffer_write () at genops.c:950
+
+950	in genops.c
+(gdb) 
+0xb6ed4a90	950	in genops.c
+(gdb) 
+0xb6ed4a94	950	in genops.c
+(gdb) 
+_IO_cleanup () at genops.c:1013
+1013	in genops.c
+(gdb) 
+_IO_unbuffer_write () at genops.c:950
+
+950	in genops.c
+(gdb) 
+970	in genops.c
+(gdb) 
+956	in genops.c
+(gdb) 
+970	in genops.c
+(gdb) 
+962
+	in genops.c
+(gdb) 
+990	in genops.c
+(gdb) 
+952
+	in genops.c
+(gdb) 
+0xb6ed4ab8	952	in genops.c
+(gdb) 
+0xb6ed4abc	952	in genops.c
+(gdb) 
+990
+	in genops.c
+(gdb) 
+950	in genops.c
+(gdb) 
+0xb6ed4b7c
+	950	in genops.c
+(gdb) 
+0xb6ed4b80	950	in genops.c
+(gdb) 
+952	in genops.c
+(gdb) 
+0xb6ed4ab8	952	in genops.c
+(gdb) 
+0xb6ed4abc
+	952	in genops.c
+(gdb) 
+954	in genops.c
+(gdb) 
+0xb6ed4ac4	954	in genops.c
+(gdb) 
+953	in genops.c
+(gdb) 
+0xb6ed4acc
+	953	in genops.c
+(gdb) 
+956	in genops.c
+(gdb) 
+0xb6ed4ad4	956	in genops.c
+(gdb) 
+0xb6ed4ad8
+	956	in genops.c
+(gdb) 
+990	in genops.c
+(gdb) 
+950	in genops.c
+(gdb) 
+0xb6ed4b7c	950	in genops.c
+(gdb) 
+0xb6ed4b80	950	in genops.c
+(gdb) 
+952	in genops.c
+(gdb) 
+0xb6ed4ab8
+	952	in genops.c
+(gdb) 
+0xb6ed4abc	952	in genops.c
+(gdb) 
+
+954	in genops.c
+(gdb) 
+0xb6ed4ac4	954	in genops.c
+(gdb) 
+953	in genops.c
+(gdb) 
+0xb6ed4acc	953	in genops.c
+(gdb) 
+990	in genops.c
+(gdb) 
+950
+	in genops.c
+(gdb) 
+0xb6ed4b7c	950	in genops.c
+(gdb) 
+0xb6ed4b80
+	950	in genops.c
+(gdb) 
+_IO_cleanup () at genops.c:1025
+1025	in genops.c
+(gdb) 
+0xb6ed4b88	1025	in genops.c
+(gdb) 
+0xb6ed4b8c in _IO_cleanup () at genops.c:1025
+
+1025	in genops.c
+(gdb) 
+0xb6e97a98 in __run_exit_handlers (status=7, listp=<optimized out>, 
+    run_list_atexit=run_list_atexit@entry=true) at exit.c:95
+95	exit.c: No such file or directory.
+(gdb) 
+0xb6e97a9c	95	in exit.c
+(gdb) 
+97	in exit.c
+(gdb) 
+0xb6e97aa4	97	in exit.c
+(gdb) 
+__GI__exit (status=status@entry=7) at ../sysdeps/unix/sysv/linux/_exit.c:28
+28	../sysdeps/unix/sysv/linux/_exit.c: No such file or directory.
+(gdb) 
+28	in ../sysdeps/unix/sysv/linux/_exit.c
+(gdb) 
+0xb6f067a8
+	28	in ../sysdeps/unix/sysv/linux/_exit.c
+(gdb) 
+0xb6f067ac	28	in ../sysdeps/unix/sysv/linux/_exit.c
+(gdb) 
+0xb6f067b0	28	in ../sysdeps/unix/sysv/linux/_exit.c
+(gdb) 
+32	in ../sysdeps/unix/sysv/linux/_exit.c
+(gdb) 
+0xb6f067cc
+	32	in ../sysdeps/unix/sysv/linux/_exit.c
+(gdb) 
+0xb6f067d0	32	in ../sysdeps/unix/sysv/linux/_exit.c
+(gdb) 
+[Inferior 1 (process 1535) exited with code 07]
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
