@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0051)http://www.tldp.org/HOWTO/Assembly-HOWTO/hello.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><title>Hello, world!</title><meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.7"><link rel="HOME" title="Linux Assembly HOWTO" href="http://www.tldp.org/HOWTO/Assembly-HOWTO/index.html"><link rel="UP" title="Quick start" href="http://www.tldp.org/HOWTO/Assembly-HOWTO/quickstart.html"><link rel="PREVIOUS" title="Introduction" href="http://www.tldp.org/HOWTO/Assembly-HOWTO/x832.html"><link rel="NEXT" title="Building an executable" href="http://www.tldp.org/HOWTO/Assembly-HOWTO/build.html"></head><body class="section" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="NAVHEADER"><table summary="Header navigation table" width="100%" border="0" cellpadding="0" cellspacing="0"><tbody><tr><th colspan="3" align="center">Linux Assembly HOWTO</th></tr><tr><td width="10%" align="left" valign="bottom"><a href="http://www.tldp.org/HOWTO/Assembly-HOWTO/x832.html" accesskey="P">Prev</a></td><td width="80%" align="center" valign="bottom">Chapter 6. Quick start</td><td width="10%" align="right" valign="bottom"><a href="http://www.tldp.org/HOWTO/Assembly-HOWTO/build.html" accesskey="N">Next</a></td></tr></tbody></table><hr align="LEFT" width="100%"></div><div class="section"><h1 class="section"><a name="AEN856"></a>6.2. Hello, world!</h1><div class="section"><h2 class="section"><a name="AEN858"></a>6.2.1. Program layout</h2><p>Linux is 32-bit, runs in protected mode, has flat memory model, and uses the
+ELF format for binaries.
+</p><p>A program can be divided into sections: <tt class="literal">.text</tt> for your code
+(read-only), <tt class="literal">.data</tt> for your data (read-write),
+<tt class="literal">.bss</tt> for uninitialized data (read-write); there can actually
+be a few other standard sections, as well as some user-defined sections, but
+there's rare need to use them and they are out of our interest here. A program
+must have at least <tt class="literal">.text</tt> section.
+</p><p>Now we will write our first program. Here is sample code:
+</p></div><div class="section"><h2 class="section"><a name="AEN867"></a>6.2.2. NASM (hello.asm)</h2><p><table border="0" bgcolor="#E0E0E0" width="100%"><tbody><tr><td><font color="#000000"><pre class="programlisting">section .text                   ;section declaration
+
+                                ;we must export the entry point to the ELF linker or
+    global  _start              ;loader. They conventionally recognize _start as their
+			                          ;entry point. Use ld -e foo to override the default.
+
+_start:
+
+                                ;write our string to stdout
+
+    mov     edx,len             ;third argument: message length
+    mov     ecx,msg             ;second argument: pointer to message to write
+    mov     ebx,1               ;first argument: file handle (stdout)
+    mov     eax,4               ;system call number (sys_write)
+    int     0x80                ;call kernel
+
+                                ;and exit
+
+  	mov     ebx,0               ;first syscall argument: exit code
+    mov     eax,1               ;system call number (sys_exit)
+    int     0x80                ;call kernel
+
+section .data                   ;section declaration
+
+msg db      "Hello, world!",0xa ;our dear string
+len equ     $ - msg             ;length of our dear string
+</pre></font></td></tr></tbody></table>
+</p></div><div class="section"><h2 class="section"><a name="AEN871"></a>6.2.3. GAS (hello.S)</h2><p><table border="0" bgcolor="#E0E0E0" width="100%"><tbody><tr><td><font color="#000000"><pre class="programlisting">.text                           # section declaration
+
+			                          # we must export the entry point to the ELF linker or
+    .global _start              # loader. They conventionally recognize _start as their
+			                          # entry point. Use ld -e foo to override the default.
+
+_start:
+
+                                # write our string to stdout
+
+	  movl    $len,%edx           # third argument: message length
+	  movl    $msg,%ecx           # second argument: pointer to message to write
+	  movl    $1,%ebx             # first argument: file handle (stdout)
+	  movl    $4,%eax             # system call number (sys_write)
+	  int     $0x80               # call kernel
+
+                                # and exit
+
+	  movl    $0,%ebx             # first argument: exit code
+	  movl    $1,%eax             # system call number (sys_exit)
+	  int     $0x80               # call kernel
+
+.data                           # section declaration
+
+msg:
+	.ascii    "Hello, world!\n"   # our dear string
+	len = . - msg                 # length of our dear string
+</pre></font></td></tr></tbody></table>
+</p></div></div><div class="NAVFOOTER"><hr align="LEFT" width="100%"><table summary="Footer navigation table" width="100%" border="0" cellpadding="0" cellspacing="0"><tbody><tr><td width="33%" align="left" valign="top"><a href="http://www.tldp.org/HOWTO/Assembly-HOWTO/x832.html" accesskey="P">Prev</a></td><td width="34%" align="center" valign="top"><a href="http://www.tldp.org/HOWTO/Assembly-HOWTO/index.html" accesskey="H">Home</a></td><td width="33%" align="right" valign="top"><a href="http://www.tldp.org/HOWTO/Assembly-HOWTO/build.html" accesskey="N">Next</a></td></tr><tr><td width="33%" align="left" valign="top">Introduction</td><td width="34%" align="center" valign="top"><a href="http://www.tldp.org/HOWTO/Assembly-HOWTO/quickstart.html" accesskey="U">Up</a></td><td width="33%" align="right" valign="top">Building an executable</td></tr></tbody></table></div></body></html>

@@ -1,0 +1,51 @@
+# Makefile
+# https://gist.github.com/FiloSottile/7125822
+
+SHELL=/bin/bash  # Mac need this
+
+NASM-PREFIX=nasm-2.12.01-macosx
+PREFIX=$(HOME)/opt/cross-g6b26-x86_64
+TARGET=x86_64-elf
+PATH:=$(PREFIX)/bin:$(NASM-PREFIX):$(PATH)
+
+LD = $(TARGET)-ld
+LD-OPT =
+
+GCC = $(TARGET)-gcc
+#GCC-OPT = --specs=nosys.specs # avoid exit.C to call _exit and fail
+
+AS = nasm
+AS-OPT = -felf64
+
+OBJDUMP = $(TARGET)-objdump
+OBJDUMP-OPT = -d
+
+all: first
+ 
+first: first.o
+	#export PATH
+	#echo $(PATH)
+	#which $(GCC)
+	#$(GCC) $(GCC-OPT) -o $@ $+
+	which $(LD)
+	$(LD) -v
+	$(LD) $(LD-OPT) -o $@ $+
+	
+first.o : first.asm
+	#export PATH
+	#echo $(PATH)
+	which $(AS)
+	$(AS) -v
+	$(AS) $(AS-OPT) -o $@ $<
+
+run: first
+	file ./first
+	./first; echo $$? # only under linux not mac os x (cross)
+
+objdump: first.o
+	$(OBJDUMP) $(OBJDUMP-OPT) first.o
+ 
+clean:
+	#export PATH
+	#echo $(PATH)
+	rm -vf first *.o
