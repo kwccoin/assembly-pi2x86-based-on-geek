@@ -13,10 +13,23 @@
 
 ;/* -- first.s */
 ;/* This is a comment */
+; under cross x86_64-elf-ld: warning: cannot find entry symbol _start; defaulting to 0000000000400080
+; under mac os x need _main 
+; /usr/bin/gcc
+;gcc  -o first first.o
+;Undefined symbols for architecture x86_64:
+;  "_main", referenced from:
+;     implicit entry/start for main executable
+;ld: symbol(s) not found for architecture x86_64
+;clang: error: linker command failed with exit code 1 (use -v to see invocation)
+;make: *** [first] Error 1
+
+    global _start ;/* 'main' is our entry point and must be global */
     global _main ;/* 'main' is our entry point and must be global */
     section .text
 
-_main:           ;/* This is main */
+_main:
+_start:           ;/* This is main */
     mov rax, 2 ;/* Put a 2 inside the register r0 */
     ret         ;/* Return from main */
 ;/* need one more returns */
