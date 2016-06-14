@@ -1,0 +1,40 @@
+SHELL=/bin/bash  # Mac need this
+
+AS-PATH=$(HOME)/opt/nasm-2.12.01-macosx
+PATH:=$(AS-PATH):$(PATH)
+
+
+GCC=gcc
+LD=ld
+LD-OPT=-macosx_version_min 10.7.0
+
+AS = nasm
+AS-OPT = -fmacho64
+OBJDUMP = $(TARGET)-objdump
+OBJDUMP-OPT = -d
+
+all: first
+
+first.o : first.asm
+	#export PATH
+	#echo $(PATH)
+	which $(AS)
+	$(AS) $(AS-OPT) -o $@ $<
+
+
+first: first.o
+	which $(GCC)
+	$(GCC) $(GCC-OPT) -o $@ $+
+
+run: first
+	file ./first
+	./first; echo $$? 
+
+
+objdump: first.o
+	$(OBJDUMP) $(OBJDUMP-OPT) first.o
+
+clean:
+	#export PATH
+	#echo $(PATH)
+	rm -vf first *.o

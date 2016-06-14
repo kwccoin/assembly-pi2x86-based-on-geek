@@ -1,0 +1,43 @@
+# Makefile http://cs.lmu.edu/~ray/notes/nasmtutorial/
+# make -f Makefile.x86
+
+all: hellow
+ 
+hellow: hellow.o
+	# gcc -o $@ $+
+	ld hellow.o -o hellow
+ 
+hellow.o : hellow.asm
+	# as -o $@ $<
+	nasm -felf64 hellow.asm # && ld hellow.o && ./a.out
+	
+run: hellow
+	./hellow; echo $$? 
+	
+objdump: hellow.o
+	objdump -d hellow.o
+
+gdb: hellow
+	# http://web.cecs.pdx.edu/~jrb/cs201/lectures/handouts/gdbcomm.txt
+	# start
+	# disas
+	# info registers r0 r1 r2 r3
+	# info all-registers
+	# p $ro = 2
+	# stepi / si
+	# nexti / ni
+	# p &myvar1
+	# p myvar1
+	# break function/line-no/file:line-no
+	# watch expression
+	# info breakpoint
+	# bt
+	# frame
+	# info local
+	# show commands
+	# define caommand ... end
+	# help running/run/info/info line/show/show coammnds
+	gdb --args ./hellow
+
+clean:
+	rm -vf hellow *.o

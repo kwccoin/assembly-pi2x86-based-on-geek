@@ -1,0 +1,58 @@
+SHELL=/bin/bash  # Mac need this
+
+AS-PATH=$(HOME)/opt/nasm-2.12.01-macosx
+PATH:=$(AS-PATH):$(PATH)
+
+
+GCC=gcc
+LD=ld
+LD-OPT=-macosx_version_min 10.7.0
+
+AS = nasm
+AS-OPT = -fmacho64
+OBJDUMP = $(TARGET)-objdump
+OBJDUMP-OPT = -d
+
+all: hellow callmax3 max3.o
+
+max3.o : max3.asm
+	#export PATH
+	#echo $(PATH)
+	which $(AS)
+	$(AS) $(AS-OPT) -o $@ $<
+
+
+callmax3: callmax3.c max3.o
+	which $(GCC)
+	$(GCC) $(GCC-OPT) -o $@ $+
+
+hellow: hellow.o
+	#export PATH
+	#echo $(PATH)
+	#$(GCC) $(GCC-OPT) -o $@ $+
+	which $(LD)
+	$(LD) --help
+	$(LD) $(LD-OPT) -o $@ $+
+
+hellow.o : hellow.asm
+	#export PATH
+	#echo $(PATH)
+	which $(AS)
+	$(AS) $(AS-OPT) -o $@ $<
+
+runh: hellow
+	file ./hellow
+	./hellow; echo $$? 
+
+run3: callmax3
+	file ./callmax3
+	./callmax3; echo $$? 
+
+
+objdump: hellow.o
+	$(OBJDUMP) $(OBJDUMP-OPT) hellow.o
+
+clean:
+	#export PATH
+	#echo $(PATH)
+	rm -vf hellow *.o
